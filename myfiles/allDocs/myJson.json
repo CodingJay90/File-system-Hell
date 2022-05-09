@@ -1,0 +1,33 @@
+{
+  "random": "64",
+  "random float": "75.729",
+  "bool": "true",
+  "date": "2000-01-12",
+  "regEx": "hellooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo world",
+  "enum": "generator",
+  "firstname": "Nickie",
+  "lastname": "Genna",
+  "city": "Malacca Town",
+  "country": "New Zealand",
+  "countryCode": "GG",
+  "email uses current data": "Nickie.Genna@gmail.com",
+  "email from expression": "Nickie.Genna@yopmail.com",
+  "array": ["Elora", "Elena", "Kara-Lynn", "Angela", "Aurore"],
+  "array of objects": [
+    {
+      "index": "0",
+      "index start at 5": "5"
+    },
+    {
+      "index": "1",
+      "index start at 5": "6"
+    },
+    {
+      "index": "2",
+      "index start at 5": "7"
+    }
+  ],
+  "Jerry": {
+    "age": "60"
+  }
+}
