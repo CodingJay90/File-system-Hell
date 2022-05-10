@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import ErrorResponse from "../utils/errorResponse.js";
+import { ErrorResponse } from "../utils/errorResponse.js";
 
 export function getDir(filePath) {
   let resolvedPath = path.resolve(filePath);

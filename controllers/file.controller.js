@@ -8,7 +8,7 @@ import {
   renameFile,
 } from "../services/file-services.js";
 import path from "path";
-import ErrorResponse from "../utils/errorResponse.js";
+import { ErrorResponse, handleError } from "../utils/errorResponse.js";
 import {
   checkDirectoryExists,
   createDirectory,
@@ -44,10 +44,7 @@ export async function getAllFiles(req, res) {
     });
     res.status(200).json({ files: fileContent, file_dir: fileDir });
   } catch (error) {
-    let statusCode = error.statusCode || 500;
-    res
-      .status(statusCode)
-      .json({ success: false, message: error.message, code: statusCode });
+    handleError(error, res);
   }
 }
 
@@ -61,11 +58,7 @@ export async function createFileController(req, res) {
     let data = createFile(OUTPUT_PATH, content);
     res.status(200).json({ success: true, data });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      success: false,
-      message: error.message,
-      code: error.statusCode || 500,
-    });
+    handleError(error, res);
   }
 }
 
@@ -78,7 +71,7 @@ export async function moveFileController(req, res) {
     deleteFileFromDirectory(old_dir);
     res.status(201).json({ status: "success" });
   } catch (error) {
-    console.log(error.message);
+    handleError(error, res);
   }
 }
 
@@ -96,9 +89,7 @@ export async function renameFileController(req, res) {
       );
     if (renameFile(oldFile, newFile)) return res.status(204).json("ok");
   } catch (error) {
-    res
-      .status(error.statusCode)
-      .json({ success: false, message: error.message, code: error.statusCode });
+    handleError(error, res);
   }
 }
 
@@ -107,8 +98,6 @@ export async function deleteFileController(req, res) {
     deleteFileFromDirectory(req.body.fileDir);
     res.status(204).json("ok");
   } catch (error) {
-    res
-      .status(error.statusCode)
-      .json({ success: false, message: error.message, code: error.statusCode });
+    handleError(error, res);
   }
 }
