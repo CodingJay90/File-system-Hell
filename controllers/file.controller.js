@@ -1,22 +1,18 @@
+import {
+  deleteFileFromDirectory,
+  getDir,
+  moveFile,
+  readAllDir,
+  readFileContent,
+} from "../services/file-services.js";
 import path from "path";
-import { readFileContent } from "../services/file-services.js";
 
 let baseDir = "./myFiles";
-let baseDi2 = path.resolve(
-  "__dirname",
-  "../",
-  "myFiles",
-  "allDocs",
-  "sample.json"
-);
-
 export async function getFile(req, res) {
   try {
-    const fileDir = `${baseDi2}`;
+    const fileDir = getDir(`${baseDir}/allDocs/sample.json`);
     const file = readFileContent(fileDir);
-    console.log(`${baseDir}/allDocs/sample.json`);
-
-    res.json({ file_content: file, file_dir: fileDir, baseDi2 });
+    res.json({ file_content: file, file_dir: fileDir });
   } catch (error) {
     console.log(error);
   }
@@ -24,9 +20,30 @@ export async function getFile(req, res) {
 
 export async function getAllFiles(req, res) {
   try {
-    const file = readFileContent(`${baseDir}/allDocs/sample.json`);
-    res.json({ file_content: file });
+    const fileDir = getDir(`${baseDir}/allDocs`);
+    const files = readAllDir(fileDir);
+
+    const fileContent = [];
+    files.forEach((i) => {
+      fileContent.push({
+        file_name: i.name,
+        file_ext: path.extname(`${fileDir}/${i.name}`),
+        content: readFileContent(`${fileDir}/${i.name}`),
+      });
+    });
+    res.json({ files: fileContent, file_dir: fileDir });
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function moveFileController(req, res) {
+  try {
+    const oldPath = getDir(`${baseDir}/test.txt`);
+    await moveFile(oldPath, getDir(`${baseDir}/acceptedDocs/test.txt`));
+    deleteFileFromDirectory(oldPath);
+    res.send("result");
+  } catch (error) {
+    console.log(error.message);
   }
 }
