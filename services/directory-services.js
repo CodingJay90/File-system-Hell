@@ -69,7 +69,6 @@ export function deleteDirectory(dir) {
   }
 }
 
-//not used anymore
 export function readAllDirectory(source) {
   try {
     return fs

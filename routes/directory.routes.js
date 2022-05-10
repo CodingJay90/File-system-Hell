@@ -8,9 +8,9 @@ import {
 
 const router = Router();
 
-router.get("/all", getAllDirectories);
+router.get("/", getAllDirectories);
 router.post("/create", createDirectoryController);
-router.patch("/rename-directory", renameDirectoryController);
-router.delete("/delete-directory", deleteDirectoryController);
+router.patch("/rename", renameDirectoryController);
+router.delete("/delete", deleteDirectoryController);
 
 export default router;
