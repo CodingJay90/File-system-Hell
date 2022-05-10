@@ -11,7 +11,7 @@ const PORT = 5000;
 //Swagger init
 const swaggerJsdocOptions = {
   definition: swaggerDefinition,
-  apis: ["./routes/*.js"],
+  apis: ["./routes/*.yaml"],
 };
 const specs = swaggerJsdoc(swaggerJsdocOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));

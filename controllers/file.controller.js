@@ -20,7 +20,9 @@ let baseDir = "./myFiles";
 export async function getFile(req, res) {
   try {
     // const fileDir = getDir(req.query.dir);
-    const { content, fileName, fileType } = readFileContent(req.query.dir);
+    const { content, fileName, fileType } = readFileContent(
+      req.query.directory
+    );
 
     res.status(200).json({
       file_content: content,
@@ -61,6 +63,7 @@ export async function getAllFiles(req, res) {
 export async function createFileController(req, res) {
   try {
     const { output_dir, file_name, file_ext, content } = req.body;
+    console.log(req.body);
     let OUTPUT_DIR = path.resolve(baseDirectory, output_dir);
     let OUTPUT_PATH = path.join(OUTPUT_DIR, `${file_name}${file_ext}`);
     if (!checkDirectoryExists(OUTPUT_DIR)) createDirectory(OUTPUT_DIR); //if the directory doesn't exist, create new
@@ -87,10 +90,10 @@ export async function moveFileController(req, res) {
 
 export async function renameFileController(req, res) {
   try {
-    let oldFile = req.body.oldFilePath;
+    let oldFile = req.body.old_file_path;
     let extName = path.extname(oldFile);
     let oldFileName = path.basename(oldFile);
-    let newFileName = req.body.newFileName + extName;
+    let newFileName = req.body.new_file_name; // + extName;
     let newFile = oldFile.replace(oldFileName, newFileName);
     if (oldFileName === newFileName)
       throw new ErrorResponse(

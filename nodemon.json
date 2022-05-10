@@ -1,3 +1,4 @@
 {
-  "ignore": ["myFiles/*", "*.json"]
+  "ignore": ["myFiles/*", "*.json"],
+  "ext": ".js, .mjs, .coffee, .litcoffee, .json, .yaml, .ts, .md, .html"
 }
