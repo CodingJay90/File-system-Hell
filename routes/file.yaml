@@ -154,3 +154,30 @@ paths:
           description: internal server error.
         404:
           description: error moving file.
+  /files/delete:
+    delete:
+      tags:
+        - Files
+      summary: Delete a file in a directory.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_dir:
+                  type: string
+                  default: "C:\\Users\\HP\\Documents\\NODEJS PROJECTS\\File system\\myFiles\\text.txt"
+                  required: true
+      responses:
+        200:
+          description: all files.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/File"
+        400:
+          description: Bad request.

@@ -91,9 +91,8 @@ export async function moveFileController(req, res) {
 export async function renameFileController(req, res) {
   try {
     let oldFile = req.body.old_file_path;
-    let extName = path.extname(oldFile);
     let oldFileName = path.basename(oldFile);
-    let newFileName = req.body.new_file_name; // + extName;
+    let newFileName = req.body.new_file_name;
     let newFile = oldFile.replace(oldFileName, newFileName);
     if (oldFileName === newFileName)
       throw new ErrorResponse(
@@ -108,7 +107,7 @@ export async function renameFileController(req, res) {
 
 export async function deleteFileController(req, res) {
   try {
-    deleteFileFromDirectory(req.body.fileDir);
+    deleteFileFromDirectory(req.body.file_dir);
     res.status(204).json("ok");
   } catch (error) {
     handleError(error, res);
