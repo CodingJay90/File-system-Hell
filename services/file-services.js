@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import ErrorResponse from "../utils/errorResponse.js";
 
 export function getDir(filePath) {
   let resolvedPath = path.resolve(filePath);
@@ -30,8 +31,18 @@ export function moveFile(from, to) {
 
 export function deleteFileFromDirectory(dir) {
   try {
-    if (!checkFileExists(dir)) return new Error("File doesn't exist" + dir);
+    checkFileExists(dir);
     fs.rmdirSync(dir, { recursive: true });
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export function renameFile(oldFileName, newFileName) {
+  try {
+    checkFileExists(oldFileName);
+    fs.renameSync(oldFileName, newFileName);
     return true;
   } catch (error) {
     throw error;
@@ -43,13 +54,6 @@ export function checkFileExists(fileDir) {
     fs.accessSync(fileDir, fs.constants.F_OK);
     return true;
   } catch (error) {
-    return false;
+    throw new ErrorResponse("File doesn't exist", 401);
   }
-}
-
-export function renameFile(oldFileName, newFileName) {
-  fs.renameSync(oldFileName, newFileName, (err) => {
-    if (err) return false;
-    return true;
-  });
 }
