@@ -18,6 +18,16 @@ export function readAllDir(dir) {
   return filenames;
 }
 
+export function createFile(filePath, content) {
+  try {
+    const data = fs.writeFileSync(filePath, content);
+    console.log(data);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export function moveFile(from, to) {
   const source = fs.createReadStream(from);
   const destination = fs.createWriteStream(to);
@@ -54,6 +64,6 @@ export function checkFileExists(fileDir) {
     fs.accessSync(fileDir, fs.constants.F_OK);
     return true;
   } catch (error) {
-    throw new ErrorResponse("File doesn't exist", 401);
+    throw new ErrorResponse("File doesn't exist", 404);
   }
 }

@@ -1,4 +1,5 @@
 import {
+  createFile,
   deleteFileFromDirectory,
   getDir,
   moveFile,
@@ -8,8 +9,14 @@ import {
 } from "../services/file-services.js";
 import path from "path";
 import ErrorResponse from "../utils/errorResponse.js";
+import {
+  checkDirectoryExists,
+  createDirectory,
+} from "../services/directory-services.js";
 
+import { baseDirectory, __dirname } from "../utils/constants.js";
 let baseDir = "./myFiles";
+
 export async function getFile(req, res) {
   try {
     const fileDir = getDir(`${baseDir}/allDocs/sample.json`);
@@ -22,7 +29,9 @@ export async function getFile(req, res) {
 
 export async function getAllFiles(req, res) {
   try {
-    const fileDir = getDir(`${baseDir}/allDocs`);
+    const fileDir = getDir(`${baseDir}/${req.query.directory}`);
+    if (!checkDirectoryExists(fileDir))
+      throw new ErrorResponse("No such directory", 401);
     const files = readAllDir(fileDir);
 
     const fileContent = [];
@@ -35,15 +44,38 @@ export async function getAllFiles(req, res) {
     });
     res.status(200).json({ files: fileContent, file_dir: fileDir });
   } catch (error) {
-    console.log(error);
+    let statusCode = error.statusCode || 500;
+    res
+      .status(statusCode)
+      .json({ success: false, message: error.message, code: statusCode });
+  }
+}
+
+export async function createFileController(req, res) {
+  try {
+    const { output_dir, file_name, file_ext, content } = req.body;
+    let OUTPUT_DIR = path.resolve(baseDirectory, output_dir);
+    let OUTPUT_PATH = path.join(OUTPUT_DIR, `${file_name}${file_ext}`);
+    if (!checkDirectoryExists(OUTPUT_DIR)) createDirectory(OUTPUT_DIR); //if the directory doesn't exist, create new
+
+    let data = createFile(OUTPUT_PATH, content);
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message,
+      code: error.statusCode || 500,
+    });
   }
 }
 
 export async function moveFileController(req, res) {
   try {
-    const oldPath = getDir(`${baseDir}/test.txt`);
-    await moveFile(oldPath, getDir(`${baseDir}/acceptedDocs/test.txt`));
-    deleteFileFromDirectory(oldPath);
+    const { old_dir, new_dir } = req.body;
+    // const oldPath = getDir(`${baseDir}/test.txt`);
+
+    await moveFile(old_dir, new_dir);
+    deleteFileFromDirectory(old_dir);
     res.status(201).json({ status: "success" });
   } catch (error) {
     console.log(error.message);
