@@ -45,6 +45,31 @@ export async function listDirectories(rootPath) {
   }
 }
 
+export function renameDirectory(oldDir, newDir) {
+  try {
+    if (!checkDirectoryExists(oldDir))
+      throw new ErrorResponse("No such directory", 400);
+    fs.renameSync(path.resolve(oldDir), path.resolve(newDir));
+    return true;
+  } catch (error) {
+    throw new ErrorResponse(
+      "Couldn't rename directory due to your permission settings",
+      400
+    );
+  }
+}
+
+export function deleteDirectory(dir) {
+  try {
+    if (!checkDirectoryExists(dir))
+      throw new ErrorResponse("No such directory", 400);
+    fs.rmdirSync(dir, { recursive: true });
+  } catch (error) {
+    throw error;
+  }
+}
+
+//not used anymore
 export function readAllDirectory(source) {
   try {
     return fs

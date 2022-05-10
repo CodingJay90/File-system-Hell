@@ -19,11 +19,17 @@ let baseDir = "./myFiles";
 
 export async function getFile(req, res) {
   try {
-    const fileDir = getDir(`${baseDir}/allDocs/sample.json`);
-    const file = readFileContent(fileDir);
-    res.status(200).json({ file_content: file, file_dir: fileDir });
+    // const fileDir = getDir(req.query.dir);
+    const { content, fileName, fileType } = readFileContent(req.query.dir);
+
+    res.status(200).json({
+      file_content: content,
+      file_type: fileType,
+      file_name: fileName,
+      file_dir: req.query.dir,
+    });
   } catch (error) {
-    console.log(error);
+    handleError(error, res);
   }
 }
 
@@ -36,10 +42,14 @@ export async function getAllFiles(req, res) {
 
     const fileContent = [];
     files.forEach((i) => {
+      const { content, fileName, fileType } = readFileContent(
+        `${fileDir}/${i.name}`
+      );
       fileContent.push({
-        file_name: i.name,
-        file_ext: path.extname(`${fileDir}/${i.name}`),
-        content: readFileContent(`${fileDir}/${i.name}`),
+        file_type: fileType,
+        file_name: fileName,
+        file_dir: `${fileDir}/${i.name}`,
+        file_content: content,
       });
     });
     res.status(200).json({ files: fileContent, file_dir: fileDir });

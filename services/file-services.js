@@ -8,9 +8,16 @@ export function getDir(filePath) {
 }
 
 export function readFileContent(fileDir) {
-  let buffer = fs.readFileSync(fileDir);
-  let data = JSON.parse(buffer);
-  return data;
+  try {
+    checkFileExists(fileDir);
+    let buffer = fs.readFileSync(fileDir);
+    const fileType = path.extname(fileDir);
+    const fileName = path.basename(fileDir);
+    let data = JSON.parse(buffer);
+    return { content: data, fileName, fileType };
+  } catch (error) {
+    throw error;
+  }
 }
 
 export function readAllDir(dir) {
