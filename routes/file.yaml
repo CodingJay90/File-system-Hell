@@ -54,7 +54,7 @@ paths:
           name: directory
           schema:
             type: string
-            default: "C:\\Users\\HP\\Documents\\NODEJS PROJECTS\\File system\\myFiles\\allDocs/sample2.json"
+            default: "C:\\Users\\HP\\Documents\\NODEJS PROJECTS\\File system\\myFiles\\allDocs/sample.json"
             required: true
       responses:
         200:
