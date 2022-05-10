@@ -50,7 +50,7 @@ export async function moveFileController(req, res) {
   }
 }
 
-export async function renameFileController(req, res, next) {
+export async function renameFileController(req, res) {
   try {
     let oldFile = req.body.oldFilePath;
     let extName = path.extname(oldFile);
@@ -63,6 +63,17 @@ export async function renameFileController(req, res, next) {
         400
       );
     if (renameFile(oldFile, newFile)) return res.status(204).json("ok");
+  } catch (error) {
+    res
+      .status(error.statusCode)
+      .json({ success: false, message: error.message, code: error.statusCode });
+  }
+}
+
+export async function deleteFileController(req, res) {
+  try {
+    deleteFileFromDirectory(req.body.fileDir);
+    res.status(204).json("ok");
   } catch (error) {
     res
       .status(error.statusCode)
