@@ -56,11 +56,36 @@ body {
 
       & > div {
         width: 50%;
-        margin: 1rem 0;
+        margin-bottom: 2rem;
+        cursor: pointer;
 
         i {
           font-size: 2rem;
         }
+      }
+    }
+  }
+  &__content {
+    border-right: 1px solid $grey;
+    padding-top: 1rem;
+
+    &-wrapper {
+      width: 85%;
+      margin: auto;
+    }
+
+    &-folder {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      border-bottom: 1px solid $dark-grey;
+      padding: 0.3rem 0;
+      cursor: pointer;
+      &-arrow {
+        margin-right: 0.5rem;
+      }
+      &-icon {
+        margin-right: 1rem;
       }
     }
   }
