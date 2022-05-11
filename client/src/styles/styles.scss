@@ -74,19 +74,35 @@ body {
       margin: auto;
     }
 
-    &-folder {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      border-bottom: 1px solid $dark-grey;
-      padding: 0.3rem 0;
-      cursor: pointer;
+    &-folder,
+    &-file {
+      // border-bottom: 1px solid $dark-grey;
+      &-group {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0.3rem 0;
+        cursor: pointer;
+      }
       &-arrow {
         margin-right: 0.5rem;
       }
+      // 22603624898
       &-icon {
         margin-right: 1rem;
       }
     }
   }
 }
+
+// Levels
+.level-0 {
+  margin-left: 0.5rem;
+}
+.level-1 {
+  margin-left: 1rem;
+}
+.level-2 {
+  margin-left: 1.5rem;
+}
+//call this 012787000.
