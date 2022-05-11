@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File system Hell</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <header class="header">
+        <div class="header__container">
+            <nav class="header__nav">
+                <div class="header__nav-group">
+                    <div class="header__nav-brand">
+                        <div class="brand">File System Hell</div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="explorer">
+        <div class="explorer__container">
+            <aside class="explorer__icon">
+                <div class="explorer__icon-wrapper">
+                    <div id="explorer__icon-file"><i class="fa-solid fa-copy"></i></div>
+                    <div id="explorer__icon-search"><i class="fa-solid fa-magnifying-glass"></i></div>
+                </div>
+            </aside>
+            <section class="explorer__content">
+                <div class="explorer__content-wrapper">
+                    <div class="explorer__content-container">
+                        <div class="explorer__content-folder">
+                            <div class="explorer__content-folder-arrow"><i class="fa-solid fa-angle-right"></i></div>
+                            <div class="explorer__content-folder-icon"><i class="fa-solid fa-folder-closed"></i></div>
+                            <div class="explorer__content-folder-name"><span>client</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="explorer__view">
+                <div class="explorer__view-container"></div>
+            </section>
+        </div>
+    </main>
+</body>
+
+</html>

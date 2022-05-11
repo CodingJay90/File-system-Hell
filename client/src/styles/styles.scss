@@ -1,0 +1,67 @@
+@import "./partials/_variables.scss";
+@import "./partials/mixins.scss";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.header {
+  height: 8vh;
+  width: 100%;
+  border-bottom: 1px solid $grey;
+  display: flex;
+  align-items: center;
+
+  &__container {
+    width: 90%;
+    margin: auto;
+  }
+  &__nav {
+    &-brand div {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  }
+}
+.explorer {
+  min-height: 92vh;
+  width: 100%;
+  &__container {
+    background-color: $primary-slate-light;
+    display: grid;
+    grid-template-columns: 1fr 2fr 10fr;
+    height: auto;
+    @include laptopBreakpoint() {
+      grid-template-columns: 1fr 3fr 8fr;
+    }
+    @include tabletBreakpoint() {
+      grid-template-columns: 1fr 4fr 8fr;
+    }
+    @include mobileBreakpoint() {
+      grid-template-columns: 1fr 4fr 8fr;
+    }
+  }
+  &__icon {
+    min-height: 92vh;
+    padding-top: 1rem;
+    border-right: 1px solid $grey;
+    &-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      & > div {
+        width: 50%;
+        margin: 1rem 0;
+
+        i {
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+}
