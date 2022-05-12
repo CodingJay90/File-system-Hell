@@ -16,19 +16,21 @@ const http = axios.create({
 });
 
 function checkForSubFolders(folder) {
-  console.log(folder);
+  //   console.log(folder);
   folder.child.forEach((i) => {
     i.id = uid();
     renderComponent(
       FolderBlock({ folder_name: i.name, id: i.id, level: "level-0" }),
-      `#${folder.id}`
+      `${folder.id}`
     );
+    console.log(i.child);
+    if (i.child) checkForSubFolders(i);
   });
 }
 
 async function appInit(event) {
   try {
-    renderComponent(BackdropWithSpinner(), "body");
+    renderComponent(BackdropWithSpinner(), "app");
     const { data } = await http.get("/directories");
     let allDirectories = [];
     data.directories.forEach(async (i, index) => {
@@ -36,7 +38,7 @@ async function appInit(event) {
       const res = await http.get(`/files/?directory=${i.name}`);
       renderComponent(
         FolderBlock({ folder_name: i.name, id: i.id }),
-        "#folder-container"
+        "folder-container"
       );
       if (res.data?.files) i.files = res.data.files;
       if (i.child) checkForSubFolders(i);

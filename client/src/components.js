@@ -1,7 +1,7 @@
 import { selectDomElement } from "./utils";
 
 export const FolderBlock = (props) => {
-  console.log(props.level);
+  //   console.log(props.level);
   let className = props.level
     ? `'explorer__content-folder ${props.level}'`
     : `explorer__content-folder`;
@@ -74,7 +74,8 @@ export const BackdropWithSpinner = (props) => {
 };
 
 export const renderComponent = (component, element) => {
-  selectDomElement(element).innerHTML += component;
+  document.getElementById(element).innerHTML += component;
+  //   selectDomElement(element).innerHTML += component;
 };
 
 export const unmountComponent = (componentId) => {

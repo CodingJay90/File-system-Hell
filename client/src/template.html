@@ -12,90 +12,99 @@
 </head>
 
 <body>
-    <header class="header">
-        <div class="header__container">
-            <nav class="header__nav">
-                <div class="header__nav-group">
-                    <div class="header__nav-brand">
-                        <div class="brand">File System Hell</div>
+    <div id="app">
+        <header class="header">
+            <div class="header__container">
+                <nav class="header__nav">
+                    <div class="header__nav-group">
+                        <div class="header__nav-brand">
+                            <div class="brand">File System Hell</div>
+                        </div>
                     </div>
-                </div>
-            </nav>
-        </div>
-    </header>
-    <main class="explorer">
-        <div class="explorer__container">
-            <aside class="explorer__icon">
-                <div class="explorer__icon-wrapper">
-                    <div id="explorer__icon-file"><i class="fa-solid fa-copy"></i></div>
-                    <div id="explorer__icon-search"><i class="fa-solid fa-magnifying-glass"></i></div>
-                </div>
-            </aside>
-            <section class="explorer__content">
-                <div class="explorer__content-wrapper-bg">
-                    <div class="explorer__content-wrapper">
-                        <div class="explorer__content-container" id="folder-container">
-                            <div class="explorer__content-folder">
-                                <div class="explorer__content-folder-group">
-                                    <div class="explorer__content-folder-arrow"><i class="fa-solid fa-angle-right"></i>
-                                    </div>
-                                    <div class="explorer__content-folder-icon"><i class="fa-solid fa-folder-closed"></i>
-                                    </div>
-                                    <div class="explorer__content-folder-name"><span>client</span></div>
-                                </div>
-                                <div class="explorer__content-folder">
-                                    <div class="explorer__content-folder-group level-0">
+                </nav>
+            </div>
+        </header>
+        <main class="explorer">
+            <div class="explorer__container">
+                <aside class="explorer__icon">
+                    <div class="explorer__icon-wrapper">
+                        <div id="explorer__icon-file"><i class="fa-solid fa-copy"></i></div>
+                        <div id="explorer__icon-search"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    </div>
+                </aside>
+                <section class="explorer__content">
+                    <div class="explorer__content-wrapper-bg">
+                        <div class="explorer__content-wrapper">
+                            <div class="explorer__content-container" id="folder-container">
+                                <!-- <div class="explorer__content-folder">
+                                    <div class="explorer__content-folder-group">
                                         <div class="explorer__content-folder-arrow"><i
                                                 class="fa-solid fa-angle-right"></i>
                                         </div>
                                         <div class="explorer__content-folder-icon"><i
                                                 class="fa-solid fa-folder-closed"></i>
                                         </div>
-                                        <div class="explorer__content-folder-name"><span>subFolder</span></div>
+                                        <div class="explorer__content-folder-name"><span>client</span></div>
+                                    </div>
+                                    <div class="explorer__content-folder">
+                                        <div class="explorer__content-folder-group level-0">
+                                            <div class="explorer__content-folder-arrow"><i
+                                                    class="fa-solid fa-angle-right"></i>
+                                            </div>
+                                            <div class="explorer__content-folder-icon"><i
+                                                    class="fa-solid fa-folder-closed"></i>
+                                            </div>
+                                            <div class="explorer__content-folder-name"><span>subFolder</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="explorer__content-file level-0">
+                                        <div class="explorer__content-file-group">
+                                            <div class="explorer__content-folder-arrow"></div>
+                                            <div class="explorer__content-folder-icon"><i class="fa-brands fa-js"></i>
+                                            </div>
+                                            <div class="explorer__content-folder-name"><span>Hello.js</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="explorer__content-folder">
+                                    <div class="explorer__content-folder-group">
+                                        <div class="explorer__content-folder-arrow"><i
+                                                class="fa-solid fa-angle-right"></i>
+                                        </div>
+                                        <div class="explorer__content-folder-icon"><i
+                                                class="fa-solid fa-folder-closed"></i>
+                                        </div>
+                                        <div class="explorer__content-folder-name"><span>client</span></div>
+                                    </div>
+                                </div>
+                                <div class="explorer__content-folder">
+                                    <div class="explorer__content-folder-group">
+                                        <div class="explorer__content-folder-arrow"><i
+                                                class="fa-solid fa-angle-right"></i>
+                                        </div>
+                                        <div class="explorer__content-folder-icon"><i
+                                                class="fa-solid fa-folder-closed"></i>
+                                        </div>
+                                        <div class="explorer__content-folder-name"><span>client</span></div>
                                     </div>
                                 </div>
                                 <div class="explorer__content-file level-0">
                                     <div class="explorer__content-file-group">
                                         <div class="explorer__content-folder-arrow"></div>
                                         <div class="explorer__content-folder-icon"><i class="fa-brands fa-js"></i></div>
-                                        <div class="explorer__content-folder-name"><span>Hello.js</span></div>
+                                        <div class="explorer__content-folder-name"><span>index.js</span></div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="explorer__content-folder">
-                                <div class="explorer__content-folder-group">
-                                    <div class="explorer__content-folder-arrow"><i class="fa-solid fa-angle-right"></i>
-                                    </div>
-                                    <div class="explorer__content-folder-icon"><i class="fa-solid fa-folder-closed"></i>
-                                    </div>
-                                    <div class="explorer__content-folder-name"><span>client</span></div>
-                                </div>
-                            </div>
-                            <div class="explorer__content-folder">
-                                <div class="explorer__content-folder-group">
-                                    <div class="explorer__content-folder-arrow"><i class="fa-solid fa-angle-right"></i>
-                                    </div>
-                                    <div class="explorer__content-folder-icon"><i class="fa-solid fa-folder-closed"></i>
-                                    </div>
-                                    <div class="explorer__content-folder-name"><span>client</span></div>
-                                </div>
-                            </div>
-                            <div class="explorer__content-file level-0">
-                                <div class="explorer__content-file-group">
-                                    <div class="explorer__content-folder-arrow"></div>
-                                    <div class="explorer__content-folder-icon"><i class="fa-brands fa-js"></i></div>
-                                    <div class="explorer__content-folder-name"><span>index.js</span></div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            <section class="explorer__view">
-                <div class="explorer__view-container"></div>
-            </section>
-        </div>
-    </main>
+                </section>
+                <section class="explorer__view">
+                    <div class="explorer__view-container"></div>
+                </section>
+            </div>
+        </main>
+    </div>
 </body>
 
 </html>
