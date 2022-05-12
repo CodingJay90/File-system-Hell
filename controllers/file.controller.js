@@ -37,13 +37,17 @@ export async function getFile(req, res) {
 
 export async function getAllFiles(req, res) {
   try {
-    const fileDir = getDir(`${baseDir}/${req.query.directory}`);
+    const fileDir = getDir(`${baseDirectory}/${req.query.directory}`);
     if (!checkDirectoryExists(fileDir))
       throw new ErrorResponse("No such directory", 401);
     const files = readAllDir(fileDir);
 
     const fileContent = [];
+    // res.json(files);
+    // console.log(fileDir);
+
     files.forEach((i) => {
+      console.log(`${fileDir}/${i.name}`);
       const { content, fileName, fileType } = readFileContent(
         `${fileDir}/${i.name}`
       );

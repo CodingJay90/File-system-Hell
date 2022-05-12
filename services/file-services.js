@@ -10,12 +10,18 @@ export function getDir(filePath) {
 export function readFileContent(fileDir) {
   try {
     checkFileExists(fileDir);
-    let buffer = fs.readFileSync(fileDir);
     const fileType = path.extname(fileDir);
     const fileName = path.basename(fileDir);
-    let data = JSON.parse(buffer);
-    return { content: data, fileName, fileType };
+    if (!fileType) throw new ErrorResponse("NO file in current Directory", 200);
+    let buffer = fs.readFileSync(fileDir);
+    let strData = buffer.toString();
+    return {
+      content: fileType === ".json" ? JSON.parse(strData) : strData,
+      fileName,
+      fileType,
+    };
   } catch (error) {
+    // console.log("rrr");
     throw error;
   }
 }
