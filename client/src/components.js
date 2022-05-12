@@ -2,8 +2,8 @@ import { selectDomElement } from "./utils";
 
 export const FolderBlock = (props) => {
   //   console.log(props.level);
-  let className = props.level
-    ? `'explorer__content-folder ${props.level}'`
+  let className = props.nested
+    ? `'explorer__content-folder ${props.nested}'`
     : `explorer__content-folder`;
 
   return `<div class=${className} id=${props.id}>
@@ -23,16 +23,17 @@ export const FolderBlock = (props) => {
   //   selectDomElement(props.element).innerHtml += template;
 };
 
-export const FileBlock = () => {
+export const FileBlock = (props) => {
+  const { name, id } = props;
   return `
-    <div class="explorer__content-file level-0">
+    <div class="explorer__content-file nested" id=${id}>
       <div class="explorer__content-file-group">
         <div class="explorer__content-folder-arrow"></div>
         <div class="explorer__content-folder-icon">
           <i class="fa-brands fa-js"></i>
         </div>
         <div class="explorer__content-folder-name">
-          <span>index.js</span>
+          <span>${name}</span>
         </div>
       </div>
     </div>

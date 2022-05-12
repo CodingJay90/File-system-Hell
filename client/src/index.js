@@ -3,6 +3,7 @@ import axios from "axios";
 import uid from "shortid";
 import {
   BackdropWithSpinner,
+  FileBlock,
   FolderBlock,
   renderComponent,
   unmountComponent,
@@ -16,23 +17,25 @@ const http = axios.create({
 });
 
 function checkForSubFolders(folder) {
-  //   console.log(folder);
   folder.child.forEach((i) => {
     i.id = uid();
     renderComponent(
-      FolderBlock({ folder_name: i.name, id: i.id, level: "level-0" }),
+      FolderBlock({ folder_name: i.name, id: i.id, nested: "nested" }),
       `${folder.id}`
     );
-    console.log(i.child);
     if (i.child) checkForSubFolders(i);
+  });
+}
+function checkForFilesInDirectories(folder) {
+  folder.files.forEach((i) => {
+    renderComponent(FileBlock({ name: i.file_name, id: uid() }), folder.id);
   });
 }
 
 async function appInit(event) {
   try {
-    renderComponent(BackdropWithSpinner(), "app");
+    // renderComponent(BackdropWithSpinner(), "app");
     const { data } = await http.get("/directories");
-    let allDirectories = [];
     data.directories.forEach(async (i, index) => {
       i.id = uid();
       const res = await http.get(`/files/?directory=${i.name}`);
@@ -40,7 +43,10 @@ async function appInit(event) {
         FolderBlock({ folder_name: i.name, id: i.id }),
         "folder-container"
       );
-      if (res.data?.files) i.files = res.data.files;
+      if (res.data?.files?.length) {
+        i.files = res.data.files;
+        checkForFilesInDirectories(i);
+      }
       if (i.child) checkForSubFolders(i);
     });
     console.log(data);
