@@ -96,7 +96,7 @@ function checkForSubFolders(folder) {
 }
 
 function checkForFilesInDirectories(folder) {
-  console.log(folder);
+  // console.log(folder);
   folder.files.forEach(async (i, index) => {
     i.fileId = uid();
     renderComponent(
@@ -115,11 +115,12 @@ async function handleFolderCreation() {
     renderComponent(BackdropWithSpinner(), "app");
     const { data } = await http.get("/directories");
 
+    console.log(data.directories);
     data.directories.forEach(async (i, index) => {
       i.id = uid();
       folderPathKeys[i.id] = i;
-      console.log(data.directories);
       const res = await http.get(`/files/?directory=${i.name}`);
+      // console.log(res.data);
       renderComponent(
         FolderBlock({ folder_name: i.name, id: i.id }),
         "folder-container"

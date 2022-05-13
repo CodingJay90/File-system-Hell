@@ -44,12 +44,13 @@ export async function getAllFiles(req, res) {
 
     const fileContent = [];
     // res.json(files);
-    // console.log(fileDir);
 
     files.forEach((i) => {
-      console.log(`${fileDir}/${i.name}`);
+      // console.log(`${fileDir}\${i.name}`);
+      console.log(fileDir + "\\" + i.name);
       const { content, fileName, fileType } = readFileContent(
-        `${fileDir}/${i.name}`
+        // `${fileDir}/${i.name}`
+        fileDir + "\\" + i.name
       );
       fileContent.push({
         file_type: fileType,
@@ -58,6 +59,7 @@ export async function getAllFiles(req, res) {
         file_content: content,
       });
     });
+    // console.log("file ==", fileContent);
     res.status(200).json({ files: fileContent, file_dir: fileDir });
   } catch (error) {
     handleError(error, res);
@@ -67,7 +69,6 @@ export async function getAllFiles(req, res) {
 export async function createFileController(req, res) {
   try {
     const { output_dir, file_name, file_ext, content } = req.body;
-    console.log(req.body);
     let OUTPUT_DIR = path.resolve(baseDirectory, output_dir);
     let OUTPUT_PATH = path.join(OUTPUT_DIR, `${file_name}${file_ext}`);
     if (!checkDirectoryExists(OUTPUT_DIR)) createDirectory(OUTPUT_DIR); //if the directory doesn't exist, create new

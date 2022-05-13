@@ -12,6 +12,7 @@ export function readFileContent(fileDir) {
     checkFileExists(fileDir);
     const fileType = path.extname(fileDir);
     const fileName = path.basename(fileDir);
+    // console.log(fileDir);
     if (!fileType) throw new ErrorResponse("NO file in current Directory", 200);
     let buffer = fs.readFileSync(fileDir);
     let strData = buffer.toString();
@@ -27,14 +28,16 @@ export function readFileContent(fileDir) {
 }
 
 export function readAllDir(dir) {
-  let filenames = fs.readdirSync(dir, { withFileTypes: true });
+  let filenames = fs
+    .readdirSync(dir, { withFileTypes: true })
+    .filter((i) => !i.isDirectory());
+  // console.log(filenames);
   return filenames;
 }
 
 export function createFile(filePath, content) {
   try {
     const data = fs.writeFileSync(filePath, content);
-    console.log(data);
     return data;
   } catch (error) {
     throw error;
