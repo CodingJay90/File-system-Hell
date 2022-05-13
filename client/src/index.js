@@ -24,17 +24,19 @@ function checkForSubFolders(folder) {
       `${folder.id}`
     );
     if (i.child) checkForSubFolders(i);
+    collapseAllFolders();
   });
 }
+
 function checkForFilesInDirectories(folder) {
   folder.files.forEach((i) => {
     renderComponent(FileBlock({ name: i.file_name, id: uid() }), folder.id);
   });
 }
 
-async function appInit(event) {
+async function handleFolderCreation() {
   try {
-    // renderComponent(BackdropWithSpinner(), "app");
+    renderComponent(BackdropWithSpinner(), "app");
     const { data } = await http.get("/directories");
     data.directories.forEach(async (i, index) => {
       i.id = uid();
@@ -49,11 +51,45 @@ async function appInit(event) {
       }
       if (i.child) checkForSubFolders(i);
     });
-    console.log(data);
+  } catch (error) {
+    throw error;
+  }
+}
+
+function collapseAllFolders() {
+  const nestedBlocks = Array.from(document.querySelectorAll(".nested"));
+  nestedBlocks.forEach((el) => el.classList.add("d-none"));
+  unmountComponent("loading-spinner");
+}
+
+async function appInit() {
+  try {
+    handleFolderCreation();
   } catch (error) {
     console.log("err");
   }
 }
-// unmountComponent("loading-spinner");
+
+window.onFolderClick = function onFolderClick(e) {
+  const { currentTarget } = e;
+  e.preventDefault();
+  e.stopPropagation();
+  const children = Array.from(currentTarget.children);
+  const folderId = currentTarget.dataset.folderid;
+  const subFolders = children.filter((i) =>
+    Array.from(i.classList).includes("nested")
+  );
+  const folderArrowIcon = document.querySelector(
+    `[id='${folderId}'] i.fa-angle-right`
+  );
+  folderArrowIcon.classList.toggle("fa-rotate-90");
+  e.currentTarget.classList.toggle("explorer__content-folder--collapsed");
+  subFolders.forEach((i) => i.classList.toggle("d-block"));
+  // if (currentTarget.classList.contains("explorer__content-folder--collapsed")) {
+  //   subFolders.forEach((i) => i.classList.add("d-block"));
+  // } else {
+  //   subFolders.forEach((i) => i.classList.remove("d-block"));
+  // }
+};
 
 window.addEventListener("load", appInit);

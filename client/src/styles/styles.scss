@@ -81,7 +81,7 @@ body {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        padding: 0.3rem 0;
+        padding: 0.3rem;
         cursor: pointer;
       }
       &-arrow {
@@ -91,6 +91,13 @@ body {
       &-icon {
         margin-right: 1rem;
       }
+      &--collapsed {
+        background-color: $primary-slate;
+        // & > .explorer__content-file.nested.d-none,
+        // .explorer__content-folder.nested.d-none {
+        //   display: block;
+        // }
+      }
     }
   }
 }
@@ -99,13 +106,10 @@ body {
 .nested {
   margin-left: 0.5rem;
 }
-.level-0 {
-  margin-left: 0.5rem;
+.d-none {
+  display: none;
 }
-.level-1 {
-  margin-left: 1rem;
-}
-.level-2 {
-  margin-left: 1.5rem;
+.d-block {
+  display: block;
 }
 //call this 012787000.

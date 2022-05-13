@@ -1,15 +1,16 @@
 import { selectDomElement } from "./utils";
 
 export const FolderBlock = (props) => {
-  //   console.log(props.level);
   let className = props.nested
     ? `'explorer__content-folder ${props.nested}'`
     : `explorer__content-folder`;
 
-  return `<div class=${className} id=${props.id}>
+  return `<div class=${className} id=${props.id} data-folderId=${props.id} onclick="onFolderClick(event)">
       <div class="explorer__content-folder-group">
         <div class="explorer__content-folder-arrow">
-          <i class="fa-solid fa-angle-right"></i>
+            <span>
+                <i class="fa-solid fa-angle-right"></i>
+            </span>
         </div>
         <div class="explorer__content-folder-icon">
           <i class="fa-solid fa-folder-closed"></i>
@@ -20,7 +21,6 @@ export const FolderBlock = (props) => {
       </div>
     </div>
     `;
-  //   selectDomElement(props.element).innerHtml += template;
 };
 
 export const FileBlock = (props) => {
@@ -38,7 +38,6 @@ export const FileBlock = (props) => {
       </div>
     </div>
     `;
-  //   selectDomElement(props.element).innerHtml += template;
 };
 export const BackdropWithSpinner = (props) => {
   return `
@@ -76,7 +75,6 @@ export const BackdropWithSpinner = (props) => {
 
 export const renderComponent = (component, element) => {
   document.getElementById(element).innerHTML += component;
-  //   selectDomElement(element).innerHTML += component;
 };
 
 export const unmountComponent = (componentId) => {
