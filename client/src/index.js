@@ -16,6 +16,9 @@ const http = axios.create({
   },
 });
 
+let folderEntries = [];
+let files = {};
+
 function checkForSubFolders(folder) {
   folder.child.forEach((i) => {
     i.id = uid();
@@ -29,8 +32,16 @@ function checkForSubFolders(folder) {
 }
 
 function checkForFilesInDirectories(folder) {
-  folder.files.forEach((i) => {
-    renderComponent(FileBlock({ name: i.file_name, id: uid() }), folder.id);
+  folder.files.forEach(async (i, index) => {
+    i.fileId = uid();
+    renderComponent(
+      FileBlock({ name: i.file_name, id: uid(), file_id: i.fileId }),
+      folder.id
+    );
+    let res = await http.get("/files/get-file", {
+      params: { directory: i.file_dir },
+    });
+    files[i.fileId] = { ...res.data, ...i };
   });
 }
 
@@ -38,6 +49,7 @@ async function handleFolderCreation() {
   try {
     renderComponent(BackdropWithSpinner(), "app");
     const { data } = await http.get("/directories");
+
     data.directories.forEach(async (i, index) => {
       i.id = uid();
       const res = await http.get(`/files/?directory=${i.name}`);
@@ -51,6 +63,7 @@ async function handleFolderCreation() {
       }
       if (i.child) checkForSubFolders(i);
     });
+    folderEntries.push(...data.directories);
   } catch (error) {
     throw error;
   }
@@ -85,11 +98,12 @@ window.onFolderClick = function onFolderClick(e) {
   folderArrowIcon.classList.toggle("fa-rotate-90");
   e.currentTarget.classList.toggle("explorer__content-folder--collapsed");
   subFolders.forEach((i) => i.classList.toggle("d-block"));
-  // if (currentTarget.classList.contains("explorer__content-folder--collapsed")) {
-  //   subFolders.forEach((i) => i.classList.add("d-block"));
-  // } else {
-  //   subFolders.forEach((i) => i.classList.remove("d-block"));
-  // }
+};
+
+window.handleFileClick = function handleFileClick(e) {
+  const fileId = e.currentTarget.dataset.fileid;
+  console.log(e.currentTarget);
+  console.log(files[fileId]);
 };
 
 window.addEventListener("load", appInit);

@@ -77,6 +77,6 @@ export function checkFileExists(fileDir) {
     fs.accessSync(fileDir, fs.constants.F_OK);
     return true;
   } catch (error) {
-    throw new ErrorResponse("File doesn't exist", 404);
+    throw new ErrorResponse("File doesn't exist", 200);
   }
 }

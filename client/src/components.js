@@ -24,9 +24,9 @@ export const FolderBlock = (props) => {
 };
 
 export const FileBlock = (props) => {
-  const { name, id } = props;
+  const { name, id, file_id } = props;
   return `
-    <div class="explorer__content-file nested" id=${id}>
+    <div class="explorer__content-file nested" id=${id} data-fileId=${file_id} onclick="handleFileClick(event)">
       <div class="explorer__content-file-group">
         <div class="explorer__content-folder-arrow"></div>
         <div class="explorer__content-folder-icon">

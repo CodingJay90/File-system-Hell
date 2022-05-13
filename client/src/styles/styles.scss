@@ -77,6 +77,7 @@ body {
     &-folder,
     &-file {
       // border-bottom: 1px solid $dark-grey;
+      user-select: none;
       &-group {
         display: flex;
         justify-content: flex-start;
@@ -92,7 +93,7 @@ body {
         margin-right: 1rem;
       }
       &--collapsed {
-        background-color: $primary-slate;
+        background-color: $secondary-white;
         // & > .explorer__content-file.nested.d-none,
         // .explorer__content-folder.nested.d-none {
         //   display: block;
