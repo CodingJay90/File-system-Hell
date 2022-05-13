@@ -5,7 +5,7 @@ export const FolderBlock = (props) => {
     ? `'explorer__content-folder ${props.nested}'`
     : `explorer__content-folder`;
 
-  return `<div class=${className} id=${props.id} data-folderId=${props.id} onclick="onFolderClick(event)">
+  return `<div class=${className} id=${props.id} data-folderId=${props.id} onclick="onFolderClick(event)" onmouseenter="handleFolderHover(event)">
       <div class="explorer__content-folder-group">
         <div class="explorer__content-folder-arrow">
             <span>
@@ -39,6 +39,32 @@ export const FileBlock = (props) => {
     </div>
     `;
 };
+
+export const TextField = (props) => {
+  const textFieldIcon = props.isFileInput
+    ? `<i class="fa-solid fa-file-lines"></i>`
+    : `<i class="fa-solid fa-folder-closed"></i>`;
+
+  return `
+    <div class="explorer__content-input" id="explorer__content-input" >
+      <div class="explorer__content-input-group">
+        <div class="explorer__content-input-icon">
+          ${textFieldIcon}
+        </div>
+          <div class="explorer__content-input-textField" id="textField__wrapper">
+            <input type="text" name="name" />
+          </div>
+        </div>
+    </div>
+  `;
+};
+
+export const TextFieldErrorMessage = (props) => {
+  return `<div class="explorer__content-textField-error" id="textFieldErrorBox">
+      <span>${props.message}</span>
+    </div>`;
+};
+
 export const BackdropWithSpinner = (props) => {
   return `
   <style>

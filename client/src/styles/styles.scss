@@ -69,6 +69,54 @@ body {
     border-right: 1px solid $grey;
     padding-top: 1rem;
 
+    &-input {
+      width: 100%;
+      margin-left: 0.5rem;
+
+      &-group {
+        display: flex;
+        justify-content: space-between;
+      }
+      &-icon {
+        margin-right: 0.5rem;
+      }
+      &-textField {
+        width: 100%;
+        input {
+          width: 100%;
+        }
+      }
+    }
+    &-textField-error {
+      padding: 0.5rem;
+      background: $violet;
+      margin-top: 0.4rem;
+      span {
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 100;
+      }
+    }
+
+    &-headerNav nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid;
+      padding: 0.13rem 0;
+      ul {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        list-style: none;
+
+        li {
+          margin-right: 0.2rem;
+          cursor: pointer;
+        }
+      }
+    }
+
     &-wrapper {
       width: 85%;
       margin: auto;
@@ -108,9 +156,12 @@ body {
   margin-left: 0.5rem;
 }
 .d-none {
-  display: none;
+  display: none !important;
 }
 .d-block {
-  display: block;
+  display: block !important;
+}
+.v-hidden {
+  visibility: hidden !important;
 }
 //call this 012787000.
