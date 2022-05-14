@@ -5,7 +5,7 @@ export const FolderBlock = (props) => {
     ? `'explorer__content-folder ${props.nested}'`
     : `explorer__content-folder`;
 
-  return `<div class=${className} id=${props.id} data-folderId=${props.id} onclick="onFolderClick(event)" onmouseenter="handleFolderHover(event)">
+  return `<div class=${className} id=${props.id} data-folderId=${props.id} onmousedown="onFolderClick(event)" onmouseenter="handleFolderHover(event)">
       <div class="explorer__content-folder-group">
         <div class="explorer__content-folder-arrow">
             <span>

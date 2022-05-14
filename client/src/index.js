@@ -87,36 +87,51 @@ async function onTextFieldChange(e) {
   }
 }
 
-function addNewFolder(e) {}
+function b(folder) {}
 
 function checkForSubFolders(folder) {
-  folder.child.forEach((i) => {
+  folder.child.forEach(async (i) => {
     i.id = uid();
     renderComponent(
       FolderBlock({ folder_name: i.name, id: i.id, nested: "nested" }),
       `${folder.id}`
     );
     folderPathKeys[i.id] = i;
+    let selectedFolder = i.path.split("\\");
+    let pathIndex = selectedFolder.indexOf(rootFolder);
+    let newFilePath = selectedFolder.slice(pathIndex + 1).join("/");
+    const { data } = await http.get(`/files/?directory=${newFilePath}`);
+    if (data.files.length) {
+      i.files = data.files;
+      checkForFilesInDirectories(i);
+    }
     if (i.child) {
-      i.child.forEach(async (x) => {
-        x.id = uid();
-        let selectedFolder = i.path.split("\\");
-        let index = selectedFolder.indexOf(rootFolder);
-        let newFilePath = selectedFolder.slice(index + 1).join("/");
-        const { data } = await http.get(`/files/?directory=${newFilePath}`);
-        if (data.files.length) {
-          x.files = data.files;
-          checkForFilesInDirectories(x);
-        }
-      });
       checkForSubFolders(i);
     }
-    collapseAllFolders();
   });
+  // if (i.child) {
+  //   i.child.forEach(async (x) => {
+  //     let selectedFolder = x.path.split("\\");
+  //     let index = selectedFolder.indexOf(rootFolder);
+  //     let newFilePath = selectedFolder.slice(index + 1).join("/");
+  //     console.log(selectedFolder);
+  //     x.id = uid();
+  //   const { data } = await http.get(`/files/?directory=${newFilePath}`);
+  //   if (data.files.length) {
+  //     x.files = data.files;
+  //     // console.log(x);
+  //     checkForFilesInDirectories(x);
+  //   }
+  // });
+  //   checkForSubFolders(i);
+  // }
+  // collapseAllFolders();
+  // });
 }
 
 function checkForFilesInDirectories(folder) {
-  folder.files?.forEach(async (i, index) => {
+  console.log(folder);
+  folder.files?.forEach(async (i) => {
     i.fileId = uid();
     renderComponent(
       FileBlock({ name: i.file_name, id: uid(), file_id: i.fileId }),
@@ -127,6 +142,7 @@ function checkForFilesInDirectories(folder) {
     });
     files[i.fileId] = { ...res.data, ...i };
   });
+  collapseAllFolders();
 }
 
 async function handleFolderCreation() {
@@ -138,6 +154,7 @@ async function handleFolderCreation() {
     data.directories.forEach(async (i, index) => {
       i.id = uid();
       folderPathKeys[i.id] = i;
+      // console.log(i.name);
       const res = await http.get(`/files/?directory=${i.name}`);
       renderComponent(
         FolderBlock({ folder_name: i.name, id: i.id }),
@@ -172,6 +189,7 @@ window.onFolderClick = function onFolderClick(e) {
   const { currentTarget } = e;
   e.preventDefault();
   e.stopPropagation();
+  console.log(e.button);
   const children = Array.from(currentTarget.children);
   const folderId = currentTarget.dataset.folderid;
   const subFolders = children.filter((i) =>
@@ -182,7 +200,7 @@ window.onFolderClick = function onFolderClick(e) {
   );
   folderArrowIcon.classList.toggle("fa-rotate-90");
   e.currentTarget.classList.toggle("explorer__content-folder--collapsed");
-  subFolders.forEach((i) => i.classList.toggle("d-block"));
+  subFolders.forEach((i) => i.classList.toggle("d-none"));
   currentFolderTarget = folderId;
 };
 
