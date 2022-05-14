@@ -37,7 +37,6 @@ async function onTextFieldChange(e) {
     let newFilePath = selectedFolder.slice(index + 1).join("/");
 
     const textFieldContainer = selectDomElement("#textField__wrapper");
-    // const folderContainer = selectDomElement(`[id='${currentFolderTarget}']`);
     console.log(extName);
     unmountComponent("textFieldErrorBox");
     if (e.key === "Enter" || e.code === "Enter") {
@@ -83,21 +82,36 @@ function addFileToFolder(e) {
 }
 
 function checkForSubFolders(folder) {
+  // console.log(folder);
   folder.child.forEach((i) => {
     i.id = uid();
     renderComponent(
       FolderBlock({ folder_name: i.name, id: i.id, nested: "nested" }),
       `${folder.id}`
     );
-    if (i.child) checkForSubFolders(i);
+    if (i.child) {
+      // checkForFilesInDirectories();
+      // checkForFilesInDirectories(folder.child);
+      i.child.forEach(async (x) => {
+        x.id = uid();
+        let selectedFolder = i.path.split("\\");
+        let index = selectedFolder.indexOf(rootFolder);
+        let newFilePath = selectedFolder.slice(index + 1).join("/");
+        const { data } = await http.get(`/files/?directory=${newFilePath}`);
+        if (data.files.length) {
+          x.files = data.files;
+          checkForFilesInDirectories(x);
+        }
+      });
+      checkForSubFolders(i);
+    }
     folderPathKeys[folder.id] = folder;
     collapseAllFolders();
   });
 }
 
 function checkForFilesInDirectories(folder) {
-  // console.log(folder);
-  folder.files.forEach(async (i, index) => {
+  folder.files?.forEach(async (i, index) => {
     i.fileId = uid();
     renderComponent(
       FileBlock({ name: i.file_name, id: uid(), file_id: i.fileId }),
@@ -120,7 +134,6 @@ async function handleFolderCreation() {
       i.id = uid();
       folderPathKeys[i.id] = i;
       const res = await http.get(`/files/?directory=${i.name}`);
-      // console.log(res.data);
       renderComponent(
         FolderBlock({ folder_name: i.name, id: i.id }),
         "folder-container"
@@ -131,7 +144,6 @@ async function handleFolderCreation() {
       }
       if (i.child) checkForSubFolders(i);
     });
-    // folderEntries.push(...data.directories);
   } catch (error) {
     throw error;
   }

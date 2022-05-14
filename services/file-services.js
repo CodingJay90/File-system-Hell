@@ -12,7 +12,6 @@ export function readFileContent(fileDir) {
     checkFileExists(fileDir);
     const fileType = path.extname(fileDir);
     const fileName = path.basename(fileDir);
-    // console.log(fileDir);
     if (!fileType) throw new ErrorResponse("NO file in current Directory", 200);
     let buffer = fs.readFileSync(fileDir);
     let strData = buffer.toString();

@@ -43,13 +43,9 @@ export async function getAllFiles(req, res) {
     const files = readAllDir(fileDir);
 
     const fileContent = [];
-    // res.json(files);
 
     files.forEach((i) => {
-      // console.log(`${fileDir}\${i.name}`);
-      console.log(fileDir + "\\" + i.name);
       const { content, fileName, fileType } = readFileContent(
-        // `${fileDir}/${i.name}`
         fileDir + "\\" + i.name
       );
       fileContent.push({
