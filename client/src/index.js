@@ -38,7 +38,6 @@ async function onTextFieldChange(e) {
     let newFilePath = selectedFolder.slice(index + 1).join("/");
 
     const textFieldContainer = selectDomElement("#textField__wrapper");
-    console.log(extName);
     unmountComponent("textFieldErrorBox");
     if (e.key === "Enter" || e.code === "Enter") {
       if (!value)
@@ -60,7 +59,6 @@ async function onTextFieldChange(e) {
           currentFolderTarget
         );
       } else {
-        console.log(newFilePath);
         let res = await http.post("/directories/create", {
           new_directory: `${newFilePath}/${fileName}`,
         });
@@ -85,23 +83,9 @@ async function onTextFieldChange(e) {
       unmountComponent("explorer__content-input");
   } catch (error) {
     console.log(error);
-    alert("error creating file");
+    alert("error creating " + fileOrFolder);
   }
 }
-
-window.addFileOrFolder = function addFileOrFolder(type) {
-  fileOrFolder = type;
-  if (!currentFolderTarget && type === "file")
-    return alert("Please select a folder to add a file to");
-  const parentFolder = selectDomElement(
-    `[id='${currentFolderTarget || "folder-container"}']`
-  );
-  const isFileInput = type === "file";
-  parentFolder.insertAdjacentHTML("beforeend", TextField({ isFileInput }));
-  const textField = selectDomElement("#textField__wrapper input");
-  textField.focus();
-  textField.addEventListener("keyup", onTextFieldChange);
-};
 
 function addNewFolder(e) {}
 
@@ -112,6 +96,7 @@ function checkForSubFolders(folder) {
       FolderBlock({ folder_name: i.name, id: i.id, nested: "nested" }),
       `${folder.id}`
     );
+    folderPathKeys[i.id] = i;
     if (i.child) {
       i.child.forEach(async (x) => {
         x.id = uid();
@@ -126,7 +111,6 @@ function checkForSubFolders(folder) {
       });
       checkForSubFolders(i);
     }
-    folderPathKeys[folder.id] = folder;
     collapseAllFolders();
   });
 }
@@ -218,6 +202,20 @@ window.handleFolderHover = function handleFolderHover(e) {
   workSpaceNavBtnContainer.classList.remove("d-none");
   // addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
   // addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
+};
+
+window.addFileOrFolder = function addFileOrFolder(type) {
+  fileOrFolder = type;
+  if (!currentFolderTarget && type === "file")
+    return alert("Please select a folder to add a file to");
+  const parentFolder = selectDomElement(
+    `[id='${currentFolderTarget || "folder-container"}']`
+  );
+  const isFileInput = type === "file";
+  parentFolder.insertAdjacentHTML("beforeend", TextField({ isFileInput }));
+  const textField = selectDomElement("#textField__wrapper input");
+  textField.focus();
+  textField.addEventListener("keyup", onTextFieldChange);
 };
 
 window.addEventListener("load", appInit);
