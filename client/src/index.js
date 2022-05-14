@@ -24,6 +24,7 @@ let currentFolderTarget = null;
 let folderPathKeys = {};
 let files = {};
 let rootFolder = "myFiles";
+let fileOrFolder = "";
 
 async function onTextFieldChange(e) {
   try {
@@ -47,17 +48,37 @@ async function onTextFieldChange(e) {
             message: "A file or folder name must be entered",
           })
         );
-      await http.post("/files/create", {
-        file_name: fileName,
-        file_ext: `.${extName}`,
-        output_dir: newFilePath,
-        content: "",
-      });
+      if (fileOrFolder === "file") {
+        await http.post("/files/create", {
+          file_name: fileName,
+          file_ext: `.${extName}`,
+          output_dir: newFilePath,
+          content: "",
+        });
+        renderComponent(
+          FileBlock({ name: fileName, id: uid(), file_id: uid() }),
+          currentFolderTarget
+        );
+      } else {
+        console.log(newFilePath);
+        let res = await http.post("/directories/create", {
+          new_directory: `${newFilePath}/${fileName}`,
+        });
+        if (res.data.success === false) {
+          textFieldContainer.insertAdjacentHTML(
+            "beforeend",
+            TextFieldErrorMessage({
+              message: res.data.message,
+            })
+          );
+          return;
+        }
+        renderComponent(
+          FolderBlock({ folder_name: fileName, id: uid() }),
+          currentFolderTarget
+        );
+      }
       unmountComponent("explorer__content-input");
-      renderComponent(
-        FileBlock({ name: fileName, id: uid(), file_id: uid() }),
-        currentFolderTarget
-      );
     }
 
     if (e.key === "Escape" || e.code === "Escape")
@@ -68,21 +89,23 @@ async function onTextFieldChange(e) {
   }
 }
 
-function addFileToFolder(e) {
-  if (!currentFolderTarget)
+window.addFileOrFolder = function addFileOrFolder(type) {
+  fileOrFolder = type;
+  if (!currentFolderTarget && type === "file")
     return alert("Please select a folder to add a file to");
-  const parentFolder = selectDomElement(`[id='${currentFolderTarget}']`);
-  parentFolder.insertAdjacentHTML(
-    "beforeend",
-    TextField({ isFileInput: true })
+  const parentFolder = selectDomElement(
+    `[id='${currentFolderTarget || "folder-container"}']`
   );
+  const isFileInput = type === "file";
+  parentFolder.insertAdjacentHTML("beforeend", TextField({ isFileInput }));
   const textField = selectDomElement("#textField__wrapper input");
   textField.focus();
   textField.addEventListener("keyup", onTextFieldChange);
-}
+};
+
+function addNewFolder(e) {}
 
 function checkForSubFolders(folder) {
-  // console.log(folder);
   folder.child.forEach((i) => {
     i.id = uid();
     renderComponent(
@@ -90,8 +113,6 @@ function checkForSubFolders(folder) {
       `${folder.id}`
     );
     if (i.child) {
-      // checkForFilesInDirectories();
-      // checkForFilesInDirectories(folder.child);
       i.child.forEach(async (x) => {
         x.id = uid();
         let selectedFolder = i.path.split("\\");
@@ -188,13 +209,15 @@ window.handleFileClick = function handleFileClick(e) {
 
 window.handleFolderHover = function handleFolderHover(e) {
   let addFileBtn = selectDomElement("#add__file");
+  let addFolderBtn = selectDomElement("#add_folder");
   let workspaceNameContainer = selectDomElement(".file__name");
   let workSpaceNavBtnContainer = selectDomElement(
     ".explorer__content-headerNav ul"
   );
   workspaceNameContainer.textContent = `${workspaceName.substring(0, 5)}...`;
   workSpaceNavBtnContainer.classList.remove("d-none");
-  addFileBtn.addEventListener("click", addFileToFolder);
+  // addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
+  // addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
 };
 
 window.addEventListener("load", appInit);

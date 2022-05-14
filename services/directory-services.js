@@ -86,7 +86,7 @@ export function readAllDirectory(source) {
 export function createDirectory(dir) {
   try {
     if (checkDirectoryExists(dir))
-      throw new ErrorResponse("Directory name exist, try a new one", 401);
+      throw new ErrorResponse("Directory name exist, try a new one", 200);
     fs.mkdirSync(dir, { recursive: true });
   } catch (error) {
     throw error;

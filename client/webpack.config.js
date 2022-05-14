@@ -47,7 +47,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "SpreadShit",
+      title: "File System Hell",
       filename: "index.html",
       template: "src/template.html",
     }),
