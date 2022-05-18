@@ -27,6 +27,7 @@ let folderPathKeys = {};
 let files = {};
 let rootFolder = "myFiles";
 let fileOrFolder = "";
+let dnd = new DnD();
 
 async function onTextFieldChange(e) {
   try {
@@ -134,11 +135,9 @@ async function handleFolderCreation() {
     renderComponent(BackdropWithSpinner(), "app");
     const { data } = await http.get("/directories");
 
-    console.log(data.directories);
     data.directories.forEach(async (i, index) => {
       i.id = uid();
       folderPathKeys[i.id] = i;
-      // console.log(i.name);
       const res = await http.get(`/files/?directory=${i.name}`);
       renderComponent(
         FolderBlock({ folder_name: i.name, id: i.id }),
@@ -172,10 +171,10 @@ async function appInit() {
 
 function addEventListenersToFolders() {
   const folders = document.querySelectorAll(".explorer__content-folder");
-  let dnd = new DnD("i");
   folders.forEach((i) => {
     i.addEventListener("mousedown", onFolderClick);
     i.addEventListener("mouseenter", handleFolderHover);
+
     i.addEventListener("dragstart", dnd.drag);
     i.addEventListener("dragover", dnd.dragOver);
     i.addEventListener("drop", dnd.dragDrop);
@@ -183,6 +182,8 @@ function addEventListenersToFolders() {
     i.addEventListener("dragleave", dnd.dragLeave);
     i.addEventListener("dragend", dnd.dragEnd);
   });
+
+  // selectDomElement("#trash__zone").addEventListener("drop", dnd.dropInTrash);
 }
 
 function renameFolder(e) {
