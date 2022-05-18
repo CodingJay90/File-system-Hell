@@ -125,6 +125,7 @@ body {
     &-folder,
     &-file {
       // border-bottom: 1px solid $dark-grey;
+      position: relative;
       user-select: none;
       &-group {
         display: flex;
@@ -146,6 +147,61 @@ body {
         // .explorer__content-folder.nested.d-none {
         //   display: block;
         // }
+      }
+    }
+  }
+  .context {
+    position: absolute;
+    top: 0;
+    right: -80%;
+    z-index: 10;
+    background: $dark-grey;
+    min-width: 11rem;
+
+    &__container {
+      // width: 90%;
+      margin: auto;
+
+      ul {
+        list-style: none;
+        padding: 1rem;
+        padding-bottom: 0;
+
+        li {
+          color: #fff;
+          padding-bottom: 0.5rem;
+          margin-bottom: 1.2rem;
+          border-bottom: 1px solid $md-grey;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .delete__zone {
+    position: fixed;
+    top: 0;
+    height: 8vh;
+    background: #fff;
+    width: 100vw;
+    visibility: hidden;
+
+    &--over {
+      visibility: visible;
+      border: 3px dashed $grey;
+    }
+
+    &-container {
+      width: 50%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+
+      span {
+        font-size: 3em;
+        color: $danger;
       }
     }
   }

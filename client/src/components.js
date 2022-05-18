@@ -5,7 +5,7 @@ export const FolderBlock = (props) => {
     ? `'explorer__content-folder ${props.nested}'`
     : `explorer__content-folder`;
 
-  return `<div class=${className} id=${props.id} data-folderId=${props.id} onmousedown="onFolderClick(event)" onmouseenter="handleFolderHover(event)">
+  return `<div draggable="true" class=${className} id=${props.id} data-folderId=${props.id}>
       <div class="explorer__content-folder-group">
         <div class="explorer__content-folder-arrow">
             <span>
@@ -26,7 +26,7 @@ export const FolderBlock = (props) => {
 export const FileBlock = (props) => {
   const { name, id, file_id } = props;
   return `
-    <div class="explorer__content-file nested" id=${id} data-fileId=${file_id} onclick="handleFileClick(event)">
+    <div class="explorer__content-file nested" id=${id} data-fileId=${file_id} onmousedown="handleFileClick(event)">
       <div class="explorer__content-file-group">
         <div class="explorer__content-folder-arrow"></div>
         <div class="explorer__content-folder-icon">
@@ -57,6 +57,28 @@ export const TextField = (props) => {
         </div>
     </div>
   `;
+};
+
+export const DropDownContext = () => {
+  return `<div class="context">
+            <div class="context__container">
+              <ul>
+                <li id="rename">
+                  <span>Rename</span>
+                </li>
+                <li id="delete">
+                  <span>Delete</span>
+                </li>
+                <li id="copy">
+                  <span>Copy</span>
+                </li>
+                <li id="paste">
+                  <span>Paste</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+    `;
 };
 
 export const TextFieldErrorMessage = (props) => {

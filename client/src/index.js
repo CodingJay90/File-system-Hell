@@ -3,6 +3,7 @@ import axios from "axios";
 import uid from "shortid";
 import {
   BackdropWithSpinner,
+  DropDownContext,
   FileBlock,
   FolderBlock,
   renderComponent,
@@ -10,7 +11,8 @@ import {
   TextFieldErrorMessage,
   unmountComponent,
 } from "./components";
-import { selectDomElement } from "./utils";
+import { deleteDomElement, selectDomElement } from "./utils";
+import DnD from "./DragNDrop";
 const http = axios.create({
   baseURL: "http://localhost:5000/api",
   timeout: 0,
@@ -60,7 +62,7 @@ async function onTextFieldChange(e) {
         );
       } else {
         let res = await http.post("/directories/create", {
-          new_directory: `${newFilePath}/${fileName}`,
+          new_directory: `${newFilePath}/${fileName.trim()}`,
         });
         if (res.data.success === false) {
           textFieldContainer.insertAdjacentHTML(
@@ -96,6 +98,7 @@ function checkForSubFolders(folder) {
       FolderBlock({ folder_name: i.name, id: i.id, nested: "nested" }),
       `${folder.id}`
     );
+    addEventListenersToFolders();
     folderPathKeys[i.id] = i;
     let selectedFolder = i.path.split("\\");
     let pathIndex = selectedFolder.indexOf(rootFolder);
@@ -109,28 +112,9 @@ function checkForSubFolders(folder) {
       checkForSubFolders(i);
     }
   });
-  // if (i.child) {
-  //   i.child.forEach(async (x) => {
-  //     let selectedFolder = x.path.split("\\");
-  //     let index = selectedFolder.indexOf(rootFolder);
-  //     let newFilePath = selectedFolder.slice(index + 1).join("/");
-  //     console.log(selectedFolder);
-  //     x.id = uid();
-  //   const { data } = await http.get(`/files/?directory=${newFilePath}`);
-  //   if (data.files.length) {
-  //     x.files = data.files;
-  //     // console.log(x);
-  //     checkForFilesInDirectories(x);
-  //   }
-  // });
-  //   checkForSubFolders(i);
-  // }
-  // collapseAllFolders();
-  // });
 }
 
 function checkForFilesInDirectories(folder) {
-  console.log(folder);
   folder.files?.forEach(async (i) => {
     i.fileId = uid();
     renderComponent(
@@ -160,6 +144,7 @@ async function handleFolderCreation() {
         FolderBlock({ folder_name: i.name, id: i.id }),
         "folder-container"
       );
+      addEventListenersToFolders();
       if (res.data?.files?.length) {
         i.files = res.data.files;
         checkForFilesInDirectories(i);
@@ -185,31 +170,50 @@ async function appInit() {
   }
 }
 
-window.onFolderClick = function onFolderClick(e) {
-  const { currentTarget } = e;
-  e.preventDefault();
+function addEventListenersToFolders() {
+  const folders = document.querySelectorAll(".explorer__content-folder");
+  let dnd = new DnD("i");
+  folders.forEach((i) => {
+    i.addEventListener("mousedown", onFolderClick);
+    i.addEventListener("mouseenter", handleFolderHover);
+    i.addEventListener("dragstart", dnd.drag);
+    i.addEventListener("dragover", dnd.dragOver);
+    i.addEventListener("drop", dnd.dragDrop);
+    i.addEventListener("dragenter", dnd.dragEnter);
+    i.addEventListener("dragleave", dnd.dragLeave);
+    i.addEventListener("dragend", dnd.dragEnd);
+  });
+}
+
+function renameFolder(e) {
   e.stopPropagation();
-  console.log(e.button);
-  const children = Array.from(currentTarget.children);
+}
+
+function onFolderClick(e) {
+  const { currentTarget } = e;
+  e.stopPropagation();
   const folderId = currentTarget.dataset.folderid;
-  const subFolders = children.filter((i) =>
-    Array.from(i.classList).includes("nested")
-  );
-  const folderArrowIcon = document.querySelector(
-    `[id='${folderId}'] i.fa-angle-right`
-  );
-  folderArrowIcon.classList.toggle("fa-rotate-90");
-  e.currentTarget.classList.toggle("explorer__content-folder--collapsed");
-  subFolders.forEach((i) => i.classList.toggle("d-none"));
   currentFolderTarget = folderId;
-};
+  if (e.button === 0) {
+    const children = Array.from(currentTarget.children);
+    const subFolders = children.filter((i) =>
+      Array.from(i.classList).includes("nested")
+    );
+    const folderArrowIcon = document.querySelector(
+      `[id='${folderId}'] i.fa-angle-right`
+    );
+    folderArrowIcon.classList.toggle("fa-rotate-90");
+    e.currentTarget.classList.toggle("explorer__content-folder--collapsed");
+    subFolders.forEach((i) => i.classList.toggle("d-none"));
+  }
+  if (e.button === 2) {
+    let container = selectDomElement(`[id='${folderId}']`);
+    container.insertAdjacentHTML("beforeend", DropDownContext());
+    selectDomElement("#rename").addEventListener("click", renameFolder);
+  }
+}
 
-window.handleFileClick = function handleFileClick(e) {
-  const fileId = e.currentTarget.dataset.fileid;
-  console.log(files[fileId]);
-};
-
-window.handleFolderHover = function handleFolderHover(e) {
+function handleFolderHover(e) {
   let addFileBtn = selectDomElement("#add__file");
   let addFolderBtn = selectDomElement("#add_folder");
   let workspaceNameContainer = selectDomElement(".file__name");
@@ -220,6 +224,12 @@ window.handleFolderHover = function handleFolderHover(e) {
   workSpaceNavBtnContainer.classList.remove("d-none");
   // addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
   // addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
+}
+
+window.handleFileClick = function handleFileClick(e) {
+  e.stopPropagation();
+  const fileId = e.currentTarget.dataset.fileid;
+  console.log(files[fileId]);
 };
 
 window.addFileOrFolder = function addFileOrFolder(type) {
@@ -237,3 +247,6 @@ window.addFileOrFolder = function addFileOrFolder(type) {
 };
 
 window.addEventListener("load", appInit);
+window.addEventListener("contextmenu", function (e) {
+  e.preventDefault();
+}); //0038481171
