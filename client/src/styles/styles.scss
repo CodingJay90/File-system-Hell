@@ -125,6 +125,9 @@ body {
     &-folder,
     &-file {
       // border-bottom: 1px solid $dark-grey;
+      &--over {
+        background-color: $dark-grey;
+      }
       position: relative;
       user-select: none;
       &-group {
