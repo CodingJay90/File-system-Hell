@@ -1,5 +1,4 @@
 import "./styles/styles.scss";
-import axios from "axios";
 import uid from "shortid";
 import {
   BackdropWithSpinner,
@@ -13,13 +12,7 @@ import {
 } from "./components";
 import { deleteDomElement, selectDomElement } from "./utils";
 import DnD from "./DragNDrop";
-const http = axios.create({
-  baseURL: "http://localhost:5000/api",
-  timeout: 0,
-  headers: {
-    Accept: "application/vnd.GitHub.v3+json",
-  },
-});
+import { http } from "./api";
 
 let workspaceName = "Work space";
 let currentFolderTarget = null;
@@ -164,6 +157,14 @@ function collapseAllFolders() {
 async function appInit() {
   try {
     handleFolderCreation();
+    let trashZone = selectDomElement("#trash__zone");
+    trashZone.addEventListener("dragover", dnd.trashZoneDragOver);
+    trashZone.addEventListener("drop", (e) =>
+      dnd.dropInTrash(e, folderPathKeys)
+    );
+    trashZone.addEventListener("dragleave", () =>
+      trashZone.classList.remove("delete__zone--over--dashed")
+    );
   } catch (error) {
     console.log("err");
   }
@@ -182,8 +183,6 @@ function addEventListenersToFolders() {
     i.addEventListener("dragleave", dnd.dragLeave);
     i.addEventListener("dragend", dnd.dragEnd);
   });
-
-  // selectDomElement("#trash__zone").addEventListener("drop", dnd.dropInTrash);
 }
 
 function renameFolder(e) {
@@ -193,7 +192,7 @@ function renameFolder(e) {
 function onFolderClick(e) {
   const { currentTarget } = e;
   e.stopPropagation();
-  const folderId = currentTarget.dataset.folderid;
+  const folderId = currentTarget.dataset.folder_id;
   currentFolderTarget = folderId;
   if (e.button === 0) {
     const children = Array.from(currentTarget.children);

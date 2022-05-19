@@ -27,5 +27,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "shortid": "^2.2.16"
-  }
+  },
+  "browserslist": [
+    "last 2 Chrome versions"
+  ]
 }

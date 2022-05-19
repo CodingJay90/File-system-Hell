@@ -187,7 +187,10 @@ body {
 
     &--over {
       visibility: visible;
-      border: 3px dashed $grey;
+
+      &--dashed {
+        border: 3px dashed $grey;
+      }
     }
 
     &-container {

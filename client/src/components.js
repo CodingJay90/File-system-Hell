@@ -5,7 +5,7 @@ export const FolderBlock = (props) => {
     ? `'explorer__content-folder ${props.nested}'`
     : `explorer__content-folder`;
 
-  return `<div draggable="true" class=${className} id=${props.id} data-folderId=${props.id}>
+  return `<div draggable="true" class=${className} id=${props.id} data-folder_id=${props.id}>
       <div class="explorer__content-folder-group">
         <div class="explorer__content-folder-arrow">
             <span>
