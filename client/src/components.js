@@ -123,6 +123,7 @@ export const BackdropWithSpinner = (props) => {
 
 export const renderComponent = (component, element) => {
   document.getElementById(element).innerHTML += component;
+  // document.getElementById(element).appendChild(component);
 };
 
 export const unmountComponent = (componentId) => {

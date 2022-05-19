@@ -26,14 +26,6 @@ class DnD {
     this.trashZone = trashZone;
     this.trashZone.classList.add("delete__zone--over");
     this.selectedId = e.currentTarget.dataset.folder_id;
-    // this.trashZone.addEventListener("dragover", (e) => {
-    //   this.trashZone.classList.add("delete__zone--over--dashed");
-    //   e.preventDefault();
-    // });
-    // this.trashZone.addEventListener("dragleave", () =>
-    //   this.trashZone.classList.remove("delete__zone--over--dashed")
-    // );
-    // this.trashZone.addEventListener("drop", (e) => this.dropInTrash(e));
   }
 
   dragLeave() {
@@ -50,32 +42,34 @@ class DnD {
   }
 
   dragEnd(e) {
-    // this.dropInTrash();
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("ended");
+    // console.log(this.trashZone);
+    this.trashZone.classList.remove("delete__zone--over");
   }
 
   //trashZone
   trashZoneDragOver(e) {
-    this.trashZone.classList.add("delete__zone--over--dashed");
     e.preventDefault();
+    this.trashZone.classList.add("delete__zone--over--dashed");
+    console.log("dragging");
   }
 
   dropInTrash(e, pathKeys) {
     e.stopPropagation();
-    e.preventDefault();
-    renderComponent(BackdropWithSpinner(), "app");
+    console.log("deleted");
     this.trashZone.classList.remove("delete__zone--over--dashed");
-    console.log(pathKeys);
-    console.log(pathKeys[this.selectedId]);
     const path = pathKeys[this.selectedId].path;
     this.deleteDirectoryApi(path);
+    e.preventDefault();
   }
 
   async deleteDirectoryApi(path) {
     try {
       await http.delete("/directories/delete", { data: { directory: path } });
-      this.trashZone.classList.remove("delete__zone--over");
-      unmountComponent("loading-spinner");
       unmountComponent(this.selectedId);
+      this.trashZone.classList.remove("delete__zone--over");
     } catch (error) {
       alert("OOPS! an error occurred");
       unmountComponent("loading-spinner");
