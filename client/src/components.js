@@ -5,7 +5,7 @@ export const FolderBlock = (props) => {
     ? `'explorer__content-folder ${props.nested}'`
     : `explorer__content-folder`;
 
-  return `<div draggable="true" class=${className} id=${props.id} data-folder_id=${props.id}>
+  return `<div draggable="true" class=${className} id=${props.id} data-type="folder" data-folder_id=${props.id}>
       <div class="explorer__content-folder-group">
         <div class="explorer__content-folder-arrow">
             <span>
@@ -26,7 +26,7 @@ export const FolderBlock = (props) => {
 export const FileBlock = (props) => {
   const { name, id, file_id } = props;
   return `
-    <div class="explorer__content-file nested" id=${id} data-fileId=${file_id} onmousedown="handleFileClick(event)">
+    <div draggable="true" class="explorer__content-file nested" data-type="file" id=${id} data-file_id=${file_id}>
       <div class="explorer__content-file-group">
         <div class="explorer__content-folder-arrow"></div>
         <div class="explorer__content-folder-icon">
@@ -123,7 +123,6 @@ export const BackdropWithSpinner = (props) => {
 
 export const renderComponent = (component, element) => {
   document.getElementById(element).innerHTML += component;
-  // document.getElementById(element).appendChild(component);
 };
 
 export const unmountComponent = (componentId) => {

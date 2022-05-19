@@ -110,15 +110,16 @@ function checkForSubFolders(folder) {
 
 function checkForFilesInDirectories(folder) {
   folder.files?.forEach(async (i) => {
-    i.fileId = uid();
+    i.file_id = uid();
     renderComponent(
-      FileBlock({ name: i.file_name, id: uid(), file_id: i.fileId }),
+      FileBlock({ name: i.file_name, id: i.file_id, file_id: i.file_id }),
       folder.id
     );
+    addEventListenerToFiles();
     let res = await http.get("/files/get-file", {
       params: { directory: i.file_dir },
     });
-    files[i.fileId] = { ...res.data, ...i };
+    files[i.file_id] = { ...res.data, ...i };
   });
   collapseAllFolders();
 }
@@ -160,7 +161,7 @@ async function appInit() {
     let trashZone = selectDomElement("#trash__zone");
     trashZone.addEventListener("dragover", dnd.trashZoneDragOver);
     trashZone.addEventListener("drop", (e) =>
-      dnd.dropInTrash(e, folderPathKeys)
+      dnd.dropInTrash(e, { folderPaths: folderPathKeys, filePaths: files })
     );
     trashZone.addEventListener("dragleave", () =>
       trashZone.classList.remove("delete__zone--over--dashed")
@@ -175,6 +176,20 @@ function addEventListenersToFolders() {
   folders.forEach((i) => {
     i.addEventListener("mousedown", onFolderClick);
     i.addEventListener("mouseenter", handleFolderHover);
+
+    i.addEventListener("dragstart", dnd.drag);
+    i.addEventListener("dragover", dnd.dragOver);
+    i.addEventListener("drop", dnd.dragDrop);
+    i.addEventListener("dragenter", dnd.dragEnter);
+    i.addEventListener("dragleave", dnd.dragLeave);
+    i.addEventListener("dragend", dnd.dragEnd);
+  });
+}
+
+function addEventListenerToFiles() {
+  const allFiles = document.querySelectorAll(".explorer__content-file");
+  allFiles.forEach((i) => {
+    i.addEventListener("mousedown", handleFileClick);
 
     i.addEventListener("dragstart", dnd.drag);
     i.addEventListener("dragover", dnd.dragOver);
@@ -226,11 +241,11 @@ function handleFolderHover(e) {
   // addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
 }
 
-window.handleFileClick = function handleFileClick(e) {
+function handleFileClick(e) {
   e.stopPropagation();
-  const fileId = e.currentTarget.dataset.fileid;
+  const fileId = e.currentTarget.dataset.file_id;
   console.log(files[fileId]);
-};
+}
 
 window.addFileOrFolder = function addFileOrFolder(type) {
   fileOrFolder = type;
