@@ -7,7 +7,9 @@ import {
 import { selectDomElement } from "./utils";
 
 class DnD {
-  constructor() {
+  constructor(folders, files) {
+    this.files = files;
+    this.folders = folders;
     this.trashZone = null;
     this.selectedId = null;
     this.dropZoneId = null;
@@ -22,6 +24,7 @@ class DnD {
 
   drag(e) {
     e.stopPropagation();
+    console.log("first", this.folders);
     const trashZone = document.getElementById("trash__zone");
     this.trashZone = trashZone;
     this.type = e.currentTarget.dataset.type;
@@ -49,6 +52,7 @@ class DnD {
       e.currentTarget.dataset.folder_id || e.currentTarget.dataset.file_id;
     // console.log("dropped on", this.dropZoneId);
     if (this.dropZoneId === this.selectedId) return; //prevent further execution if dragged item id in the same folder as the drop zone
+
     this.swap();
   }
 
@@ -61,8 +65,7 @@ class DnD {
   swap() {
     let from = selectDomElement(`[id='${this.selectedId}']`);
     let to = selectDomElement(`[id='${this.dropZoneId}']`);
-    console.log("from ", from);
-    console.log("to ", to);
+
     if (from.contains(to)) return; //prevent parent folder getting moved into subfolder
     if (!to.classList.contains("explorer__content-folder--collapsed"))
       from.classList.add("d-none"); //add a display none style to moved element if parent element is collapsed
@@ -74,20 +77,27 @@ class DnD {
     to.appendChild(from);
   }
 
+  async moveFileOrFolderAPI() {
+    try {
+      await http.post("/files/move", {});
+    } catch (error) {
+      alert("OOPS, an error occurred");
+    }
+  }
+
   //trashZone
   trashZoneDragOver(e) {
     e.preventDefault();
     this.trashZone.classList.add("delete__zone--over--dashed");
   }
 
-  dropInTrash(e, args) {
-    let { folderPaths, filePaths } = args;
+  dropInTrash(e) {
     e.stopPropagation();
     this.trashZone.classList.remove("delete__zone--over--dashed");
     const path =
       this.type === "folder"
-        ? folderPaths[this.selectedId].path
-        : filePaths[this.selectedId].file_dir;
+        ? this.folders[this.selectedId].path
+        : this.files[this.selectedId].file_dir;
     this.deleteDirectoryApi(path);
     e.preventDefault();
   }

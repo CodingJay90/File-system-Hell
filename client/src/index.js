@@ -20,7 +20,7 @@ let folderPathKeys = {};
 let files = {};
 let rootFolder = "myFiles";
 let fileOrFolder = "";
-let dnd = new DnD();
+let dnd = new DnD(folderPathKeys, files);
 
 async function onTextFieldChange(e) {
   try {
@@ -155,14 +155,12 @@ function collapseAllFolders() {
   unmountComponent("loading-spinner");
 }
 
-async function appInit() {
+function appInit() {
   try {
     handleFolderCreation();
     let trashZone = selectDomElement("#trash__zone");
     trashZone.addEventListener("dragover", dnd.trashZoneDragOver);
-    trashZone.addEventListener("drop", (e) =>
-      dnd.dropInTrash(e, { folderPaths: folderPathKeys, filePaths: files })
-    );
+    trashZone.addEventListener("drop", dnd.dropInTrash);
     trashZone.addEventListener("dragleave", () =>
       trashZone.classList.remove("delete__zone--over--dashed")
     );
