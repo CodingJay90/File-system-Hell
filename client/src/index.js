@@ -242,7 +242,6 @@ function handleFolderHover(e) {
 function handleFileClick(e) {
   e.stopPropagation();
   const fileId = e.currentTarget.dataset.file_id;
-  console.log(files[fileId]);
 }
 
 window.addFileOrFolder = function addFileOrFolder(type) {

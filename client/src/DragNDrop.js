@@ -24,7 +24,6 @@ class DnD {
 
   drag(e) {
     e.stopPropagation();
-    console.log("first", this.folders);
     const trashZone = document.getElementById("trash__zone");
     this.trashZone = trashZone;
     this.type = e.currentTarget.dataset.type;
@@ -48,12 +47,25 @@ class DnD {
   dragDrop(e) {
     e.preventDefault();
     e.stopPropagation();
+    let currentTarget = e.currentTarget;
+    if (currentTarget.classList.contains("explorer__content-file"))
+      currentTarget = currentTarget.parentElement; //check if a file is dropped on a file rather than a folder and set the current target to it's nearest parent
+
     this.dropZoneId =
-      e.currentTarget.dataset.folder_id || e.currentTarget.dataset.file_id;
-    // console.log("dropped on", this.dropZoneId);
+      currentTarget.dataset.folder_id || currentTarget.dataset.file_id;
+
+    let fileName = this.files[this.selectedId].file_name;
+    let oldDir = this.files[this.selectedId].file_dir;
+    let newDir = `${this.folders[this.dropZoneId].path}\\${fileName}`;
+    // console.log(this.selectedId);
+    // console.log("old dir", oldDir);
+    // console.log("new dir", newDir);
+    console.log("file moved", this.files[this.selectedId]);
     if (this.dropZoneId === this.selectedId) return; //prevent further execution if dragged item id in the same folder as the drop zone
 
+    this.moveFileOrFolderAPI(oldDir, newDir);
     this.swap();
+    this.files[this.selectedId].file_dir = newDir; //update the new path for the newly moved file
   }
 
   dragEnd(e) {
@@ -77,9 +89,9 @@ class DnD {
     to.appendChild(from);
   }
 
-  async moveFileOrFolderAPI() {
+  async moveFileOrFolderAPI(old_dir, new_dir) {
     try {
-      await http.post("/files/move", {});
+      await http.post("/files/move", { old_dir, new_dir });
     } catch (error) {
       alert("OOPS, an error occurred");
     }
