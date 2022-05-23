@@ -1,5 +1,16 @@
 import { selectDomElement } from "./utils";
 
+function renderIcon(icon) {
+  switch (icon) {
+    case "json":
+      return `<a href="https://www.flaticon.com/free-icons/json" title="json icons">Json icons created by Smashicons - Flaticon</a>`;
+
+    default:
+      ` <i class="fa-brands fa-js"></i>`;
+      break;
+  }
+}
+
 export const FolderBlock = (props) => {
   let className = props.nested
     ? `'explorer__content-folder ${props.nested}'`
@@ -24,13 +35,14 @@ export const FolderBlock = (props) => {
 };
 
 export const FileBlock = (props) => {
-  const { name, id, file_id } = props;
+  const { name, id, file_id, ext } = props;
+  console.log(ext.replace(".", ""));
   return `
     <div draggable="true" class="explorer__content-file nested" data-type="file" id=${id} data-file_id=${file_id}>
       <div class="explorer__content-file-group">
         <div class="explorer__content-folder-arrow"></div>
         <div class="explorer__content-folder-icon">
-          <i class="fa-brands fa-js"></i>
+          ${renderIcon(ext.replace(".", ""))}
         </div>
         <div class="explorer__content-folder-name">
           <span>${name}</span>

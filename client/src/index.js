@@ -85,8 +85,7 @@ async function onTextFieldChange(e) {
         let folderSplit = newFilePath.split("\\");
         let folderName = folderSplit[folderSplit.length - 1];
         let index = folderSplit.indexOf(rootFolder);
-        console.log(folderSplit);
-        console.log(`${newFilePath}\\${fileName.trim()}`, "hmm");
+
         if (index === -1)
           newFilePath = `${rootDirPathname}\\${newFilePath}\\${fileName.trim()}`;
 
@@ -105,8 +104,6 @@ async function onTextFieldChange(e) {
           name: folderName,
           path: `${newFilePath}`,
         };
-        console.log(newFilePath);
-        console.log(folderPathKeys[folderId]);
         renderComponent(
           FolderBlock({
             folder_name: fileName,
@@ -156,7 +153,12 @@ function checkForFilesInDirectories(folder) {
   folder.files?.forEach(async (i) => {
     i.file_id = uid();
     renderComponent(
-      FileBlock({ name: i.file_name, id: i.file_id, file_id: i.file_id }),
+      FileBlock({
+        name: i.file_name,
+        id: i.file_id,
+        file_id: i.file_id,
+        ext: i.file_type,
+      }),
       folder.id
     );
     addEventListenerToFiles();
@@ -174,7 +176,7 @@ async function handleFolderCreation() {
     const { data } = await http.get("/directories");
     rootDirPathname = data.root_dir;
 
-    data.directories.forEach(async (i, index) => {
+    data.directories?.forEach(async (i, index) => {
       i.id = uid();
       folderPathKeys[i.id] = i;
       const res = await http.get(`/files/?directory=${i.name}`);

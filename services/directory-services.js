@@ -98,7 +98,6 @@ export function moveDirectory(oldDir, newDir) {
   try {
     fse.moveSync(oldDir, newDir);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
