@@ -11,11 +11,12 @@ import path from "path";
 import fs from "fs";
 import { baseDirectory } from "../utils/constants.js";
 import { handleError } from "../utils/errorResponse.js";
+let rootDir = path.resolve("./myFiles");
 
 export async function getAllDirectories(req, res) {
   try {
     const directories = await listDirectories(baseDirectory);
-    res.status(200).json({ directories });
+    res.status(200).json({ root_dir: rootDir, directories });
   } catch (error) {
     handleError(error, res);
   }

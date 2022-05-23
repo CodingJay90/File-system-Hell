@@ -20,6 +20,7 @@ let folderPathKeys = {};
 let files = {};
 let rootFolder = "myFiles";
 let fileOrFolder = "";
+let rootDirPathname = null;
 let dnd = new DnD(folderPathKeys, files);
 
 async function onTextFieldChange(e) {
@@ -29,10 +30,12 @@ async function onTextFieldChange(e) {
     let extName = value.includes(".")
       ? value.split(".")[value.split(".").length - 1]
       : ""; //check for extension name
-    let selectedFolder = folderPathKeys[currentFolderTarget].path.split("\\");
+    let selectedFolder =
+      folderPathKeys[currentFolderTarget]?.path.split("\\") ||
+      rootDirPathname.split("\\"); //add to root dir if no folder is selected
     let index = selectedFolder.indexOf(rootFolder);
-    let newFilePath = selectedFolder.slice(index + 1).join("/");
-
+    let newFilePath =
+      selectedFolder.slice(index + 1).join("/") || rootDirPathname;
     const textFieldContainer = selectDomElement("#textField__wrapper");
     unmountComponent("textFieldErrorBox");
     if (e.key === "Enter" || e.code === "Enter") {
@@ -126,6 +129,7 @@ async function handleFolderCreation() {
   try {
     renderComponent(BackdropWithSpinner(), "app");
     const { data } = await http.get("/directories");
+    rootDirPathname = data.root_dir;
 
     data.directories.forEach(async (i, index) => {
       i.id = uid();
@@ -231,17 +235,21 @@ function handleFileClick(e) {
 
 function addFileOrFolder(type) {
   fileOrFolder = type;
-  console.log(currentFolderTarget);
+  if (!currentFolderTarget) {
+    currentFolderTarget = "folder-container"; //update ui to add file or folder to root folder container
+  }
+  // console.log(currentFolderTarget);
+  // console.log(rootDirPathname);
   // if (!currentFolderTarget && type === "file")
   //   return alert("Please select a folder to add a file to");
-  // const parentFolder = selectDomElement(
-  //   `[id='${currentFolderTarget || "folder-container"}']`
-  // );
-  // const isFileInput = type === "file";
-  // parentFolder.insertAdjacentHTML("beforeend", TextField({ isFileInput }));
-  // const textField = selectDomElement("#textField__wrapper input");
-  // textField.focus();
-  // textField.addEventListener("keyup", onTextFieldChange);
+  const parentFolder = selectDomElement(
+    `[id='${currentFolderTarget || "folder-container"}']`
+  );
+  const isFileInput = type === "file";
+  parentFolder.insertAdjacentHTML("beforeend", TextField({ isFileInput }));
+  const textField = selectDomElement("#textField__wrapper input");
+  textField.focus();
+  textField.addEventListener("keyup", onTextFieldChange);
 }
 
 function addGlobalEventListener() {
