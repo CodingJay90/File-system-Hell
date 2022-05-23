@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import fse from "fs-extra";
 import { baseDirectory } from "../utils/constants.js";
 import { ErrorResponse } from "../utils/errorResponse.js";
 
@@ -89,6 +90,15 @@ export function createDirectory(dir) {
       throw new ErrorResponse("Directory name exist, try a new one", 200);
     fs.mkdirSync(dir, { recursive: true });
   } catch (error) {
+    throw error;
+  }
+}
+
+export function moveDirectory(oldDir, newDir) {
+  try {
+    fse.moveSync(oldDir, newDir);
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 }

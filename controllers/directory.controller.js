@@ -2,6 +2,7 @@ import {
   createDirectory,
   deleteDirectory,
   listDirectories,
+  moveDirectory,
   readAllDirectory,
   renameDirectory,
 } from "../services/directory-services.js";
@@ -56,5 +57,17 @@ export async function deleteDirectoryController(req, res) {
     res.status(204).json("ok");
   } catch (error) {
     handleError(error, res);
+  }
+}
+
+export async function moveDirectoryController(req, res) {
+  try {
+    let { old_dir, new_dir } = req.body;
+    let destination = path.basename(old_dir);
+    let newDirPath = new_dir.concat(`\\${destination}`);
+    moveDirectory(old_dir, newDirPath);
+    res.status(204).json("ok");
+  } catch (error) {
+    handleError(error);
   }
 }
