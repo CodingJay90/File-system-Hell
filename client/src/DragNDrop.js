@@ -30,6 +30,8 @@ class DnD {
     this.trashZone.classList.add("delete__zone--over");
     this.selectedId =
       e.currentTarget.dataset.folder_id || e.currentTarget.dataset.file_id;
+    console.log(this.files);
+    console.log(this.folders);
   }
 
   dragLeave(e) {
@@ -53,6 +55,7 @@ class DnD {
 
     this.dropZoneId =
       currentTarget.dataset.folder_id || currentTarget.dataset.file_id;
+    if (this.dropZoneId === this.selectedId) return; //prevent further execution if dragged item id in the same folder as the drop zone
 
     let fileName = this.files[this.selectedId].file_name;
     let oldDir = this.files[this.selectedId].file_dir;
@@ -61,7 +64,6 @@ class DnD {
     // console.log("old dir", oldDir);
     // console.log("new dir", newDir);
     console.log("file moved", this.files[this.selectedId]);
-    if (this.dropZoneId === this.selectedId) return; //prevent further execution if dragged item id in the same folder as the drop zone
 
     this.moveFileOrFolderAPI(oldDir, newDir);
     this.swap();
