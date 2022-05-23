@@ -30,8 +30,8 @@ class DnD {
     this.trashZone.classList.add("delete__zone--over");
     this.selectedId =
       e.currentTarget.dataset.folder_id || e.currentTarget.dataset.file_id;
-    console.log(this.files);
-    console.log(this.folders);
+    console.log("files", this.files);
+    console.log("folders", this.folders);
   }
 
   dragLeave(e) {
@@ -49,7 +49,11 @@ class DnD {
   dragDrop(e) {
     e.preventDefault();
     e.stopPropagation();
+    let folderMoved = this.type === "folder";
     let currentTarget = e.currentTarget;
+    let fileName;
+    let oldDir;
+    let newDir;
     if (currentTarget.classList.contains("explorer__content-file"))
       currentTarget = currentTarget.parentElement; //check if a file is dropped on a file rather than a folder and set the current target to it's nearest parent
 
@@ -57,17 +61,21 @@ class DnD {
       currentTarget.dataset.folder_id || currentTarget.dataset.file_id;
     if (this.dropZoneId === this.selectedId) return; //prevent further execution if dragged item id in the same folder as the drop zone
 
-    let fileName = this.files[this.selectedId].file_name;
-    let oldDir = this.files[this.selectedId].file_dir;
-    let newDir = `${this.folders[this.dropZoneId].path}\\${fileName}`;
-    // console.log(this.selectedId);
-    // console.log("old dir", oldDir);
-    // console.log("new dir", newDir);
-    console.log("file moved", this.files[this.selectedId]);
+    if (folderMoved) {
+      oldDir = this.folders[this.selectedId].path; //source
+      newDir = this.folders[this.dropZoneId].path; //target
+      this.moveFileOrFolderAPI(oldDir, newDir, this.type);
+      this.swap();
+      this.folders[this.selectedId].path = newDir;
+    } else {
+      fileName = this.files[this.selectedId].file_name;
+      oldDir = this.files[this.selectedId].file_dir;
+      newDir = `${this.folders[this.dropZoneId].path}\\${fileName}`;
 
-    this.moveFileOrFolderAPI(oldDir, newDir);
-    this.swap();
-    this.files[this.selectedId].file_dir = newDir; //update the new path for the newly moved file
+      this.moveFileOrFolderAPI(oldDir, newDir, this.type);
+      this.swap();
+      this.files[this.selectedId].file_dir = newDir; //update the new path for the newly moved file
+    }
   }
 
   dragEnd(e) {
@@ -91,9 +99,11 @@ class DnD {
     to.appendChild(from);
   }
 
-  async moveFileOrFolderAPI(old_dir, new_dir) {
+  async moveFileOrFolderAPI(old_dir, new_dir, type) {
     try {
-      await http.post("/files/move", { old_dir, new_dir });
+      if (type === "file") await http.post("/files/move", { old_dir, new_dir });
+      if (type === "folder")
+        await http.post("/directories/move", { old_dir, new_dir });
     } catch (error) {
       alert("OOPS, an error occurred");
     }

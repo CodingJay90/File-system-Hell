@@ -57,10 +57,12 @@ export function moveFile(from, to) {
 export function deleteFileFromDirectory(dir) {
   try {
     checkFileExists(dir);
-    fs.rmdirSync(dir, { recursive: true });
+    // fs.rmdirSync(dir, { recursive: true });
+    fs.unlinkSync(dir);
     return true;
   } catch (error) {
     throw error;
+  } finally {
   }
 }
 
