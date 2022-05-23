@@ -143,6 +143,11 @@ body {
       // 22603624898
       &-icon {
         margin-right: 1rem;
+        object,
+        img {
+          width: 16px;
+          height: 16px;
+        }
       }
       &--collapsed {
         background-color: $secondary-white;

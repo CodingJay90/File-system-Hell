@@ -1,12 +1,57 @@
 import { selectDomElement } from "./utils";
+import js from "./assets/fileIcons/js/js1.svg";
+import json from "./assets/fileIcons/json/json.svg";
+import css from "./assets/fileIcons/css/css.svg";
+import scss from "./assets/fileIcons/css/scss-dark.svg";
+import react from "./assets/fileIcons/js/react.svg";
+import webpack from "./assets/fileIcons/js/webpack.svg";
+import html from "./assets/fileIcons/html/html.svg";
+import txt from "./assets/fileIcons/html/txt.svg";
+import git from "./assets/fileIcons/git/git.svg";
+import cc from "./assets/fileIcons/c/c.svg";
+import cHash from "./assets/fileIcons/c/c++.svg";
+import xml from "./assets/fileIcons/html/xml-file.svg";
+import csv from "./assets/fileIcons/html/csv.svg";
+import defaultFileIcon from "./assets/fileIcons/default/default-grey.svg";
 
 function renderIcon(icon) {
   switch (icon) {
     case "json":
-      return `<a href="https://www.flaticon.com/free-icons/json" title="json icons">Json icons created by Smashicons - Flaticon</a>`;
-
+      return `<object type="image/svg+xml" data=${json}></object>`;
+    case "js":
+      return `<object type="image/svg+xml" data=${js}></object>`;
+    case "ts":
+      return `<object type="image/svg+xml" data=${ts}></object>`;
+    case "css":
+      return `<object type="image/svg+xml" data=${css}></object>`;
+    case "scss":
+      return `<object type="image/svg+xml" data=${scss}></object>`;
+    case "html":
+      return `<object type="image/svg+xml" data=${html}></object>`;
+    case "txt":
+      return `<object type="image/svg+xml" data=${txt}></object>`;
+    case "cc":
+      return `<object type="image/svg+xml" data=${cc}></object>`;
+    case "c":
+      return `<object type="image/svg+xml" data=${cHash}></object>`;
+    case "xml":
+      return `<object type="image/svg+xml" data=${xml}></object>`;
+    case "csv":
+      return `<object type="image/svg+xml" data=${csv}></object>`;
+    case "jsx":
+    case "tsx":
+      return `<object type="image/svg+xml" data=${react}></object>`;
+    case "git":
+    case "gitignore":
+      return `<object type="image/svg+xml" data=${git}></object>`;
+    case "webpack":
+    case "webpack.config":
+    case "webpack.config.js":
+    case "webpack.config.ts":
+      return `<object type="image/svg+xml" data=${webpack}></object>`;
+      break;
     default:
-      ` <i class="fa-brands fa-js"></i>`;
+      return `<object type="image/svg+xml" data=${defaultFileIcon}></object>`;
       break;
   }
 }
@@ -34,15 +79,23 @@ export const FolderBlock = (props) => {
     `;
 };
 
+function t() {
+  return `<h1>hhs</h1>`;
+}
+
 export const FileBlock = (props) => {
   const { name, id, file_id, ext } = props;
-  console.log(ext.replace(".", ""));
+  // console.log(ext.replace(".", ""));
+  console.log(renderIcon(ext.replace(".", "")));
+  // console.log(t());
   return `
     <div draggable="true" class="explorer__content-file nested" data-type="file" id=${id} data-file_id=${file_id}>
       <div class="explorer__content-file-group">
         <div class="explorer__content-folder-arrow"></div>
         <div class="explorer__content-folder-icon">
-          ${renderIcon(ext.replace(".", ""))}
+          <span>
+            ${renderIcon(ext.replace(".", ""))}
+          </span>
         </div>
         <div class="explorer__content-folder-name">
           <span>${name}</span>
