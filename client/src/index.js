@@ -23,6 +23,15 @@ let fileOrFolder = "";
 let rootDirPathname = null;
 let dnd = new DnD(folderPathKeys, files);
 
+function getFile(query) {
+  return http.get("/files/get-file", {
+    params: { directory: query },
+  });
+}
+function addFileAPI(body) {
+  return http.post("/files/create", { ...body });
+}
+
 async function onTextFieldChange(e) {
   try {
     let value = e.target.value;
@@ -47,20 +56,40 @@ async function onTextFieldChange(e) {
           })
         );
       if (fileOrFolder === "file") {
-        await http.post("/files/create", {
+        let fileId = uid();
+        let newFile = {
           file_name: fileName,
           file_ext: `.${extName}`,
           output_dir: newFilePath,
           content: "",
-        });
+        };
+        await addFileAPI(newFile);
+        files[fileId] = {
+          file_content: "",
+          file_id: fileId,
+          file_name: fileName,
+          file_type: extName,
+          file_dir: newFilePath
+            ? `${rootDirPathname}\\${newFilePath}\\${fileName}.${extName}`
+            : `${rootDirPathname}\\${fileName}.${extName}`,
+        };
         renderComponent(
-          FileBlock({ name: fileName, id: uid(), file_id: uid() }),
+          FileBlock({ name: fileName, id: fileId, file_id: fileId }),
           currentFolderTarget
         );
       } else {
         let res = await http.post("/directories/create", {
-          new_directory: `${newFilePath}/${fileName.trim()}`,
+          new_directory: `${newFilePath}\\${fileName.trim()}`,
         });
+        let folderId = uid();
+        let folderSplit = newFilePath.split("\\");
+        let folderName = folderSplit[folderSplit.length - 1];
+        let index = folderSplit.indexOf(rootFolder);
+        console.log(folderSplit);
+        console.log(`${newFilePath}\\${fileName.trim()}`, "hmm");
+        if (index === -1)
+          newFilePath = `${rootDirPathname}\\${newFilePath}\\${fileName.trim()}`;
+
         if (res.data.success === false) {
           textFieldContainer.insertAdjacentHTML(
             "beforeend",
@@ -70,12 +99,26 @@ async function onTextFieldChange(e) {
           );
           return;
         }
+        folderPathKeys[folderId] = {
+          child: [],
+          id: folderId,
+          name: folderName,
+          path: `${newFilePath}`,
+        };
+        console.log(newFilePath);
+        console.log(folderPathKeys[folderId]);
         renderComponent(
-          FolderBlock({ folder_name: fileName, id: uid() }),
+          FolderBlock({
+            folder_name: fileName,
+            id: folderId,
+            nested: "nested",
+          }),
           currentFolderTarget
         );
       }
       unmountComponent("explorer__content-input");
+      addEventListenersToFolders();
+      addEventListenerToFiles();
     }
 
     if (e.key === "Escape" || e.code === "Escape")
@@ -253,13 +296,12 @@ function addFileOrFolder(type) {
 }
 
 function addGlobalEventListener() {
-  let trashZone = selectDomElement("#trash__zone");
   const addFileBtn = selectDomElement("#add__file");
   const addFolderBtn = selectDomElement("#add__folder");
+  let trashZone = selectDomElement("#trash__zone");
 
   addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
   addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
-
   trashZone.addEventListener("dragover", dnd.trashZoneDragOver);
   trashZone.addEventListener("drop", dnd.dropInTrash);
   trashZone.addEventListener("dragleave", () =>

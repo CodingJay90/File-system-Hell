@@ -122,6 +122,7 @@ class DnD {
       this.type === "folder"
         ? this.folders[this.selectedId].path
         : this.files[this.selectedId].file_dir;
+    console.log(path);
     this.deleteDirectoryApi(path);
     e.preventDefault();
   }

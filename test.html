@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button class="a">add more</button>
+    <button class="b">click me</button>
+    <ul>
+        <li>ttt</li>
+    </ul>
+</body>
+<script>
+    let btn = document.querySelector("button.b")
+    document.querySelector("button.a").addEventListener("click", () => {
+        document.querySelector("ul").innerHTML += `<li>hi ${Math.round(Math.random() * 100)} </li>`
+    })
+    btn.addEventListener("click", () => {
+        console.log("clicked man")
+    })
+</script>
+
+</html>
