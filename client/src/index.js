@@ -83,8 +83,6 @@ async function onTextFieldChange(e) {
   }
 }
 
-function b(folder) {}
-
 function checkForSubFolders(folder) {
   folder.child.forEach(async (i) => {
     i.id = uid();
@@ -153,20 +151,6 @@ function collapseAllFolders() {
   const nestedBlocks = Array.from(document.querySelectorAll(".nested"));
   nestedBlocks.forEach((el) => el.classList.add("d-none"));
   unmountComponent("loading-spinner");
-}
-
-function appInit() {
-  try {
-    handleFolderCreation();
-    let trashZone = selectDomElement("#trash__zone");
-    trashZone.addEventListener("dragover", dnd.trashZoneDragOver);
-    trashZone.addEventListener("drop", dnd.dropInTrash);
-    trashZone.addEventListener("dragleave", () =>
-      trashZone.classList.remove("delete__zone--over--dashed")
-    );
-  } catch (error) {
-    console.log("err");
-  }
 }
 
 function addEventListenersToFolders() {
@@ -242,21 +226,48 @@ function handleFolderHover(e) {
 function handleFileClick(e) {
   e.stopPropagation();
   const fileId = e.currentTarget.dataset.file_id;
+  console.log(fileId);
 }
 
-window.addFileOrFolder = function addFileOrFolder(type) {
+function addFileOrFolder(type) {
   fileOrFolder = type;
-  if (!currentFolderTarget && type === "file")
-    return alert("Please select a folder to add a file to");
-  const parentFolder = selectDomElement(
-    `[id='${currentFolderTarget || "folder-container"}']`
+  console.log(currentFolderTarget);
+  // if (!currentFolderTarget && type === "file")
+  //   return alert("Please select a folder to add a file to");
+  // const parentFolder = selectDomElement(
+  //   `[id='${currentFolderTarget || "folder-container"}']`
+  // );
+  // const isFileInput = type === "file";
+  // parentFolder.insertAdjacentHTML("beforeend", TextField({ isFileInput }));
+  // const textField = selectDomElement("#textField__wrapper input");
+  // textField.focus();
+  // textField.addEventListener("keyup", onTextFieldChange);
+}
+
+function addGlobalEventListener() {
+  let trashZone = selectDomElement("#trash__zone");
+  const addFileBtn = selectDomElement("#add__file");
+  const addFolderBtn = selectDomElement("#add__folder");
+
+  addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
+  addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
+
+  trashZone.addEventListener("dragover", dnd.trashZoneDragOver);
+  trashZone.addEventListener("drop", dnd.dropInTrash);
+  trashZone.addEventListener("dragleave", () =>
+    trashZone.classList.remove("delete__zone--over--dashed")
   );
-  const isFileInput = type === "file";
-  parentFolder.insertAdjacentHTML("beforeend", TextField({ isFileInput }));
-  const textField = selectDomElement("#textField__wrapper input");
-  textField.focus();
-  textField.addEventListener("keyup", onTextFieldChange);
-};
+}
+
+function appInit(e) {
+  try {
+    e.preventDefault();
+    handleFolderCreation();
+    addGlobalEventListener();
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 window.addEventListener("load", appInit);
 window.addEventListener("contextmenu", function (e) {
