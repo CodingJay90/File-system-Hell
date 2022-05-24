@@ -74,7 +74,12 @@ async function onTextFieldChange(e) {
             : `${rootDirPathname}\\${fileName}.${extName}`,
         };
         renderComponent(
-          FileBlock({ name: fileName, id: fileId, file_id: fileId }),
+          FileBlock({
+            name: fileName,
+            id: fileId,
+            file_id: fileId,
+            ext: extName,
+          }),
           currentFolderTarget
         );
       } else {
@@ -150,6 +155,7 @@ function checkForSubFolders(folder) {
 }
 
 function checkForFilesInDirectories(folder) {
+  console.log(folder);
   folder.files?.forEach(async (i) => {
     i.file_id = uid();
     renderComponent(
@@ -168,32 +174,6 @@ function checkForFilesInDirectories(folder) {
     files[i.file_id] = { ...res.data, ...i };
   });
   collapseAllFolders();
-}
-
-async function handleFolderCreation() {
-  try {
-    renderComponent(BackdropWithSpinner(), "app");
-    const { data } = await http.get("/directories");
-    rootDirPathname = data.root_dir;
-
-    data.directories?.forEach(async (i, index) => {
-      i.id = uid();
-      folderPathKeys[i.id] = i;
-      const res = await http.get(`/files/?directory=${i.name}`);
-      renderComponent(
-        FolderBlock({ folder_name: i.name, id: i.id }),
-        "folder-container"
-      );
-      addEventListenersToFolders();
-      if (res.data?.files?.length) {
-        i.files = res.data.files;
-        checkForFilesInDirectories(i);
-      }
-      if (i.child) checkForSubFolders(i);
-    });
-  } catch (error) {
-    throw error;
-  }
 }
 
 function collapseAllFolders() {
@@ -309,6 +289,33 @@ function addGlobalEventListener() {
   trashZone.addEventListener("dragleave", () =>
     trashZone.classList.remove("delete__zone--over--dashed")
   );
+}
+
+async function handleFolderCreation() {
+  try {
+    renderComponent(BackdropWithSpinner(), "app");
+    const { data } = await http.get("/directories");
+    rootDirPathname = data.root_dir;
+    console.log(data.directories);
+
+    data.directories?.forEach(async (i, index) => {
+      i.id = uid();
+      folderPathKeys[i.id] = i;
+      const res = await http.get(`/files/?directory=${i.name}`);
+      renderComponent(
+        FolderBlock({ folder_name: i.name, id: i.id }),
+        "folder-container"
+      );
+      addEventListenersToFolders();
+      if (res.data?.files?.length) {
+        i.files = res.data.files;
+        checkForFilesInDirectories(i);
+      }
+      if (i.child) checkForSubFolders(i);
+    });
+  } catch (error) {
+    throw error;
+  }
 }
 
 function appInit(e) {
