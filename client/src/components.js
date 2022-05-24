@@ -78,7 +78,7 @@ function renderIcon(icon) {
     case ".r":
       return `<object type="image/svg+xml" data=${rLang}></object>`;
     case ".rb":
-      return `<object type="image/svg+xml" data=${ruby}}></object>`;
+      return `<object type="image/svg+xml" data=${ruby}></object>`;
     case ".swift":
       return `<object type="image/svg+xml" data=${swift}></object>`;
     case ".java":
@@ -189,7 +189,7 @@ export const TextField = (props) => {
 };
 
 export const DropDownContext = () => {
-  return `<div class="context">
+  return `<div class="context" id="dropdown__context">
             <div class="context__container">
               <ul>
                 <li id="rename">

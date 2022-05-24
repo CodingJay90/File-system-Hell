@@ -215,6 +215,34 @@ function renameFolder(e) {
   e.stopPropagation();
 }
 
+async function deleteFileOrFolder(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  try {
+    let target = selectDomElement(`[id='${currentFolderTarget}']`);
+    let isFolder = target.dataset.type === "folder";
+    if (isFolder) {
+      let path = folderPathKeys[currentFolderTarget].path;
+      await http.delete("/directories/delete", { data: { directory: path } });
+    } else {
+      let path = files[currentFolderTarget].file_dir;
+      await http.delete("/files/delete", { data: { file_dir: path } });
+    }
+    unmountComponent(currentFolderTarget);
+  } catch (error) {
+    console.log(error);
+    alert("An error occurred");
+  }
+}
+
+function addEventListenerToContextDropdown() {
+  let deleteBtn = selectDomElement("#delete");
+  let renameBtn = selectDomElement("#rename");
+
+  deleteBtn.addEventListener("mousedown", deleteFileOrFolder);
+  renameBtn.addEventListener("mousedown", renameFolder);
+}
+
 function onFolderClick(e) {
   const { currentTarget } = e;
   e.stopPropagation();
@@ -233,9 +261,11 @@ function onFolderClick(e) {
     subFolders.forEach((i) => i.classList.toggle("d-none"));
   }
   if (e.button === 2) {
+    unmountComponent("dropdown__context");
     let container = selectDomElement(`[id='${folderId}']`);
     container.insertAdjacentHTML("beforeend", DropDownContext());
-    selectDomElement("#rename").addEventListener("click", renameFolder);
+    addEventListenerToContextDropdown();
+    // selectDomElement("#rename").addEventListener("click", renameFolder);
   }
 }
 
@@ -281,7 +311,6 @@ function addGlobalEventListener() {
   const addFileBtn = selectDomElement("#add__file");
   const addFolderBtn = selectDomElement("#add__folder");
   const collapseFoldersBtn = selectDomElement("#collapse__folders");
-  console.log(collapseFoldersBtn);
   let trashZone = selectDomElement("#trash__zone");
 
   addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
