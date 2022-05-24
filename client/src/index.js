@@ -78,7 +78,7 @@ async function onTextFieldChange(e) {
             name: fileName,
             id: fileId,
             file_id: fileId,
-            ext: extName,
+            ext: `.${extName}`,
           }),
           currentFolderTarget
         );
