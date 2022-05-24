@@ -280,10 +280,25 @@ function addFileOrFolder(type) {
 function addGlobalEventListener() {
   const addFileBtn = selectDomElement("#add__file");
   const addFolderBtn = selectDomElement("#add__folder");
+  const collapseFoldersBtn = selectDomElement("#collapse__folders");
+  console.log(collapseFoldersBtn);
   let trashZone = selectDomElement("#trash__zone");
 
   addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
   addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
+  collapseFoldersBtn.addEventListener("click", () => {
+    let el = Array.from(
+      document.querySelectorAll(".explorer__content-folder--collapsed")
+    );
+    let arrowIcons = Array.from(
+      document.querySelectorAll(".explorer__content-folder--collapsed i")
+    );
+    el.forEach((i) =>
+      i.classList.remove("explorer__content-folder--collapsed")
+    );
+    arrowIcons.forEach((i) => i.classList.remove("fa-rotate-90"));
+    collapseAllFolders();
+  });
   trashZone.addEventListener("dragover", dnd.trashZoneDragOver);
   trashZone.addEventListener("drop", dnd.dropInTrash);
   trashZone.addEventListener("dragleave", () =>
