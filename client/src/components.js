@@ -171,17 +171,19 @@ export const FileBlock = (props) => {
 
 export const TextField = (props) => {
   const textFieldIcon = props.isFileInput
-    ? `<i class="fa-solid fa-file-lines"></i>`
+    ? `<object type="image/svg+xml" data=${defaultFileIcon}></object>`
     : `<i class="fa-solid fa-folder-closed"></i>`;
 
   return `
     <div class="explorer__content-input" id="explorer__content-input" >
       <div class="explorer__content-input-group">
         <div class="explorer__content-input-icon">
+        <span class="text__field-icon">
           ${textFieldIcon}
+        </span>
         </div>
           <div class="explorer__content-input-textField" id="textField__wrapper">
-            <input type="text" name="name" />
+            <input type="text" name="name" autocomplete="off"/>
           </div>
         </div>
     </div>

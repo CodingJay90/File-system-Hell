@@ -79,6 +79,11 @@ body {
       }
       &-icon {
         margin-right: 0.5rem;
+        object,
+        img {
+          width: 16px;
+          height: 16px;
+        }
       }
       &-textField {
         width: 100%;

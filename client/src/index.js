@@ -60,6 +60,11 @@ async function onTextFieldChange(e) {
       selectedFolder.slice(index + 1).join("/") || rootDirPathname;
     const textFieldContainer = selectDomElement("#textField__wrapper");
     unmountComponent("textFieldErrorBox");
+    let fileIcon = selectDomElement(
+      `[id='${currentFolderTarget}'] .text__field-icon`
+    );
+    let fileExt = value.split(".").pop();
+    fileIcon.innerHTML = renderIcon(`.${fileExt}`);
     if (e.key === "Enter" || e.code === "Enter") {
       if (!value)
         return textFieldContainer.insertAdjacentHTML(
@@ -70,6 +75,7 @@ async function onTextFieldChange(e) {
         );
       if (fileOrFolder === "file") {
         let fileId = uid();
+
         let newFile = {
           file_name: fileName,
           file_ext: `.${extName}`,
@@ -227,6 +233,7 @@ async function onRenameInputChange(e) {
   e.stopPropagation();
   const isFolder =
     selectDomElement(`[id='${currentFolderTarget}']`).dataset.type === "folder"; //check if we right clicked on a folder or file
+  let defaultValue = e.target.defaultValue;
   let value = e.target.value;
   let textNode = document.createTextNode(value);
   let fileIcon = selectDomElement(
@@ -252,11 +259,15 @@ async function onRenameInputChange(e) {
         currentElementTarget.childNodes[0]
       );
     }
-    if (e.key === "Escape" || e.code === "Escape")
+    if (e.key === "Escape" || e.code === "Escape") {
+      textNode.nodeValue = defaultValue;
+      if (!isFolder)
+        fileIcon.innerHTML = renderIcon(`.${defaultValue.split(".").pop()}`); //reset the file extension and value to it's initial state
       currentElementTarget.replaceChild(
         textNode,
         currentElementTarget.childNodes[0]
       );
+    }
   } catch (error) {
     // console.log(error.response);
     if (error.response.status === 400)
@@ -275,7 +286,9 @@ function renameFolder(e) {
     className: "rename__input",
     id: "rename__input",
     value,
+    defaultValue: value,
     onkeyup: onRenameInputChange,
+    autocomplete: "off",
     onmousedown: (ev) => ev.stopPropagation(),
   });
   target.replaceChild(inputNode, target.childNodes[0]);
@@ -367,14 +380,12 @@ function addFileOrFolder(type) {
   if (!currentFolderTarget) {
     currentFolderTarget = "folder-container"; //update ui to add file or folder to root folder container
   }
-  // console.log(currentFolderTarget);
-  // console.log(rootDirPathname);
-  // if (!currentFolderTarget && type === "file")
-  //   return alert("Please select a folder to add a file to");
   const parentFolder = selectDomElement(
     `[id='${currentFolderTarget || "folder-container"}']`
   );
   const isFileInput = type === "file";
+  if (selectDomElement("#explorer__content-input"))
+    unmountComponent("explorer__content-input");
   parentFolder.insertAdjacentHTML("beforeend", TextField({ isFileInput }));
   const textField = selectDomElement("#textField__wrapper input");
   textField.focus();
@@ -383,6 +394,7 @@ function addFileOrFolder(type) {
 
 function refreshFolders(e) {
   const container = selectDomElement("#folder-container");
+  //remove all folders before refreshing
   do {
     container.removeChild(container.firstChild);
   } while (container.firstChild);
