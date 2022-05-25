@@ -139,7 +139,7 @@ export const FolderBlock = (props) => {
           <i class="fa-solid fa-folder-closed"></i>
         </div>
         <div class="explorer__content-folder-name">
-          <span>${props.folder_name}</span>
+          <span class="name__wrapper">${props.folder_name}</span>
         </div>
       </div>
     </div>
@@ -162,7 +162,7 @@ export const FileBlock = (props) => {
           </span>
         </div>
         <div class="explorer__content-folder-name">
-          <span>${name}</span>
+          <span class="name__wrapper">${name}</span>
         </div>
       </div>
     </div>

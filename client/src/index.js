@@ -22,6 +22,7 @@ let rootFolder = "myFiles";
 let fileOrFolder = "";
 let rootDirPathname = null;
 let dnd = new DnD(folderPathKeys, files);
+let currentElementTarget = null;
 
 function getFile(query) {
   return http.get("/files/get-file", {
@@ -31,6 +32,17 @@ function getFile(query) {
 function addFileAPI(body) {
   return http.post("/files/create", { ...body });
 }
+
+async function renameFolderAPI(body) {
+  const res = await http.patch("/directories/rename", { ...body });
+  return res.data;
+}
+async function renameFileAPI(body) {
+  const res = await http.patch("/files/rename", { ...body });
+  return res.data;
+}
+
+function deleteFile() {}
 
 async function onTextFieldChange(e) {
   try {
@@ -155,7 +167,6 @@ function checkForSubFolders(folder) {
 }
 
 function checkForFilesInDirectories(folder) {
-  console.log(folder);
   folder.files?.forEach(async (i) => {
     i.file_id = uid();
     renderComponent(
@@ -211,8 +222,59 @@ function addEventListenerToFiles() {
   });
 }
 
+async function onRenameInputChange(e) {
+  e.stopPropagation();
+  const isFolder =
+    selectDomElement(`[id='${currentFolderTarget}']`).dataset.type === "folder"; //check if we right clicked on a folder or file
+  let value = e.target.value;
+  let textNode = document.createTextNode(value);
+  try {
+    if (e.key === "Enter" || e.code === "Enter") {
+      if (isFolder) {
+        await renameFolderAPI({
+          old_file_path: folderPathKeys[currentFolderTarget].path,
+          new_directory_name: value,
+        });
+      } else {
+        await renameFileAPI({
+          old_file_path: files[currentFolderTarget].file_dir,
+          new_file_name: value,
+        });
+      }
+      currentElementTarget.replaceChild(
+        textNode,
+        currentElementTarget.childNodes[0]
+      );
+    }
+    if (e.key === "Escape" || e.code === "Escape")
+      currentElementTarget.replaceChild(
+        textNode,
+        currentElementTarget.childNodes[0]
+      );
+  } catch (error) {
+    // console.log(error.response);
+    if (error.response.status === 400)
+      return alert(error.response.data.message);
+    alert("OOps an error occurred");
+  }
+}
+
 function renameFolder(e) {
   e.stopPropagation();
+  let target = selectDomElement(`[id='${currentFolderTarget}'] .name__wrapper`);
+  currentElementTarget = target;
+  let value = target.textContent;
+  let inputNode = document.createElement("input");
+  Object.assign(inputNode, {
+    className: "rename__input",
+    id: "rename__input",
+    value,
+    onkeyup: onRenameInputChange,
+    onmousedown: (ev) => ev.stopPropagation(),
+  });
+  target.replaceChild(inputNode, target.childNodes[0]);
+  setTimeout(() => document.getElementById("rename__input").focus(), 0); //not sure why the setTimeout works on the function, but it did
+  unmountComponent("dropdown__context");
 }
 
 async function deleteFileOrFolder(e) {
@@ -243,6 +305,13 @@ function addEventListenerToContextDropdown() {
   renameBtn.addEventListener("mousedown", renameFolder);
 }
 
+function showDropDownContext(id) {
+  unmountComponent("dropdown__context");
+  let container = selectDomElement(`[id='${id}']`);
+  container.insertAdjacentHTML("beforeend", DropDownContext());
+  addEventListenerToContextDropdown();
+}
+
 function onFolderClick(e) {
   const { currentTarget } = e;
   e.stopPropagation();
@@ -260,13 +329,7 @@ function onFolderClick(e) {
     e.currentTarget.classList.toggle("explorer__content-folder--collapsed");
     subFolders.forEach((i) => i.classList.toggle("d-none"));
   }
-  if (e.button === 2) {
-    unmountComponent("dropdown__context");
-    let container = selectDomElement(`[id='${folderId}']`);
-    container.insertAdjacentHTML("beforeend", DropDownContext());
-    addEventListenerToContextDropdown();
-    // selectDomElement("#rename").addEventListener("click", renameFolder);
-  }
+  if (e.button === 2) showDropDownContext(folderId);
 }
 
 function handleFolderHover(e) {
@@ -285,7 +348,12 @@ function handleFolderHover(e) {
 function handleFileClick(e) {
   e.stopPropagation();
   const fileId = e.currentTarget.dataset.file_id;
-  console.log(fileId);
+  currentFolderTarget = fileId;
+  if (e.button === 0) {
+    //left click
+    console.log(fileId);
+  }
+  if (e.button === 2) showDropDownContext(fileId);
 }
 
 function addFileOrFolder(type) {

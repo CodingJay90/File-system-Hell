@@ -216,6 +216,23 @@ body {
       }
     }
   }
+
+  &__view {
+    &-container {
+      display: flex;
+      height: 20vh;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      h4 {
+        font-size: 2rem;
+        font-weight: 400;
+        color: $primary-slate;
+        font-family: $font-Open-Sans;
+      }
+    }
+  }
 }
 
 // Levels
