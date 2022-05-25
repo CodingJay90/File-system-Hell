@@ -36,7 +36,7 @@ import next from "./assets/fileIcons/templates/nextjs.svg";
 import nuxt from "./assets/fileIcons/templates/nuxt.svg";
 import vue from "./assets/fileIcons/templates/vue.svg";
 
-function renderIcon(icon) {
+export function renderIcon(icon) {
   switch (icon) {
     case ".json":
     case ".jsonp":
@@ -157,7 +157,7 @@ export const FileBlock = (props) => {
       <div class="explorer__content-file-group">
         <div class="explorer__content-folder-arrow"></div>
         <div class="explorer__content-folder-icon">
-          <span>
+          <span class="fileIcon__wrapper">
             ${renderIcon(ext)}
           </span>
         </div>

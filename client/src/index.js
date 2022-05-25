@@ -6,6 +6,7 @@ import {
   FileBlock,
   FolderBlock,
   renderComponent,
+  renderIcon,
   TextField,
   TextFieldErrorMessage,
   unmountComponent,
@@ -228,6 +229,11 @@ async function onRenameInputChange(e) {
     selectDomElement(`[id='${currentFolderTarget}']`).dataset.type === "folder"; //check if we right clicked on a folder or file
   let value = e.target.value;
   let textNode = document.createTextNode(value);
+  let fileIcon = selectDomElement(
+    `[id='${currentFolderTarget}'] .fileIcon__wrapper`
+  );
+  let fileExt = value.split(".").pop();
+  if (!isFolder) fileIcon.innerHTML = renderIcon(`.${fileExt}`); //update file icon on tying
   try {
     if (e.key === "Enter" || e.code === "Enter") {
       if (isFolder) {
