@@ -381,14 +381,24 @@ function addFileOrFolder(type) {
   textField.addEventListener("keyup", onTextFieldChange);
 }
 
+function refreshFolders(e) {
+  const container = selectDomElement("#folder-container");
+  do {
+    container.removeChild(container.firstChild);
+  } while (container.firstChild);
+  appInit(e);
+}
+
 function addGlobalEventListener() {
   const addFileBtn = selectDomElement("#add__file");
   const addFolderBtn = selectDomElement("#add__folder");
   const collapseFoldersBtn = selectDomElement("#collapse__folders");
+  const refreshFolderBtn = selectDomElement("#refresh__folders");
   let trashZone = selectDomElement("#trash__zone");
 
   addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
   addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
+  refreshFolderBtn.addEventListener("click", refreshFolders);
   collapseFoldersBtn.addEventListener("click", () => {
     let el = Array.from(
       document.querySelectorAll(".explorer__content-folder--collapsed")
