@@ -24,6 +24,7 @@ class DnD {
 
   drag(e) {
     e.stopPropagation();
+    console.log("dragging");
     const trashZone = document.getElementById("trash__zone");
     this.trashZone = trashZone;
     this.type = e.currentTarget.dataset.type;

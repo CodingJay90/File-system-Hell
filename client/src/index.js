@@ -163,7 +163,8 @@ function checkForSubFolders(folder) {
     let pathIndex = selectedFolder.indexOf(rootFolder);
     let newFilePath = selectedFolder.slice(pathIndex + 1).join("/");
     const { data } = await http.get(`/files/?directory=${newFilePath}`);
-    if (data.files.length) {
+    console.log(data);
+    if (data.files?.length) {
       i.files = data.files;
       checkForFilesInDirectories(i);
     }
@@ -198,35 +199,6 @@ function collapseAllFolders() {
   const nestedBlocks = Array.from(document.querySelectorAll(".nested"));
   nestedBlocks.forEach((el) => el.classList.add("d-none"));
   unmountComponent("loading-spinner");
-}
-
-function addEventListenersToFolders() {
-  const folders = document.querySelectorAll(".explorer__content-folder");
-  folders.forEach((i) => {
-    i.addEventListener("mousedown", onFolderClick);
-    i.addEventListener("mouseenter", handleFolderHover);
-
-    i.addEventListener("dragstart", dnd.drag);
-    i.addEventListener("dragover", dnd.dragOver);
-    i.addEventListener("drop", dnd.dragDrop);
-    i.addEventListener("dragenter", dnd.dragEnter);
-    i.addEventListener("dragleave", dnd.dragLeave);
-    i.addEventListener("dragend", dnd.dragEnd);
-  });
-}
-
-function addEventListenerToFiles() {
-  const allFiles = document.querySelectorAll(".explorer__content-file");
-  allFiles.forEach((i) => {
-    i.addEventListener("mousedown", handleFileClick);
-
-    i.addEventListener("dragstart", dnd.drag);
-    i.addEventListener("dragover", dnd.dragOver);
-    i.addEventListener("drop", dnd.dragDrop);
-    i.addEventListener("dragenter", dnd.dragEnter);
-    i.addEventListener("dragleave", dnd.dragLeave);
-    i.addEventListener("dragend", dnd.dragEnd);
-  });
 }
 
 async function onRenameInputChange(e) {
@@ -316,6 +288,35 @@ async function deleteFileOrFolder(e) {
   }
 }
 
+function addEventListenersToFolders() {
+  const folders = document.querySelectorAll(".explorer__content-folder");
+  folders.forEach((i) => {
+    i.addEventListener("mousedown", onFolderClick);
+    i.addEventListener("mouseenter", handleFolderHover);
+
+    i.addEventListener("dragstart", dnd.drag);
+    i.addEventListener("dragover", dnd.dragOver);
+    i.addEventListener("drop", dnd.dragDrop);
+    i.addEventListener("dragenter", dnd.dragEnter);
+    i.addEventListener("dragleave", dnd.dragLeave);
+    i.addEventListener("dragend", dnd.dragEnd);
+  });
+}
+
+function addEventListenerToFiles() {
+  const allFiles = document.querySelectorAll(".explorer__content-file");
+  allFiles.forEach((i) => {
+    i.addEventListener("mousedown", handleFileClick);
+
+    i.addEventListener("dragstart", dnd.drag);
+    i.addEventListener("dragover", dnd.dragOver);
+    i.addEventListener("drop", dnd.dragDrop);
+    i.addEventListener("dragenter", dnd.dragEnter);
+    i.addEventListener("dragleave", dnd.dragLeave);
+    i.addEventListener("dragend", dnd.dragEnd);
+  });
+}
+
 function addEventListenerToContextDropdown() {
   let deleteBtn = selectDomElement("#delete");
   let renameBtn = selectDomElement("#rename");
@@ -332,8 +333,10 @@ function showDropDownContext(id) {
 }
 
 function onFolderClick(e) {
-  const { currentTarget } = e;
   e.stopPropagation();
+  // e.preventDefault();
+  const { currentTarget } = e;
+  // e.cancelBubble = true;
   const folderId = currentTarget.dataset.folder_id;
   currentFolderTarget = folderId;
   if (e.button === 0) {
@@ -349,6 +352,7 @@ function onFolderClick(e) {
     subFolders.forEach((i) => i.classList.toggle("d-none"));
   }
   if (e.button === 2) showDropDownContext(folderId);
+  return false;
 }
 
 function handleFolderHover(e) {
@@ -368,6 +372,9 @@ function handleFileClick(e) {
   e.stopPropagation();
   const fileId = e.currentTarget.dataset.file_id;
   currentFolderTarget = fileId;
+  if (selectDomElement("#explorer__content-input"))
+    unmountComponent("explorer__content-input");
+  console.log("file click");
   if (e.button === 0) {
     //left click
     console.log(fileId);
@@ -406,8 +413,14 @@ function addGlobalEventListener() {
   const addFolderBtn = selectDomElement("#add__folder");
   const collapseFoldersBtn = selectDomElement("#collapse__folders");
   const refreshFolderBtn = selectDomElement("#refresh__folders");
+  const explorerContainer = selectDomElement(".explorer__content");
   let trashZone = selectDomElement("#trash__zone");
 
+  // explorerContainer.addEventListener("mousedown", (e) => {
+  //   console.log("event from parent fired", e.target.classList);
+  //   if (e.target.classList.contains("explorer__content"))
+  //     currentFolderTarget = "folder-container";
+  // });
   addFileBtn.addEventListener("click", () => addFileOrFolder("file"));
   addFolderBtn.addEventListener("click", () => addFileOrFolder("folder"));
   refreshFolderBtn.addEventListener("click", refreshFolders);
@@ -465,6 +478,8 @@ function appInit(e) {
     addGlobalEventListener();
   } catch (error) {
     console.log(error);
+  } finally {
+    collapseAllFolders();
   }
 }
 

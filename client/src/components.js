@@ -194,6 +194,12 @@ export const DropDownContext = () => {
   return `<div class="context" id="dropdown__context">
             <div class="context__container">
               <ul>
+                <li id="add__file-context">
+                  <span>Add file</span>
+                </li>
+                <li id="add__folder-context">
+                  <span>Add folder</span>
+                </li>
                 <li id="rename">
                   <span>Rename</span>
                 </li>
