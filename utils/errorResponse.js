@@ -6,7 +6,7 @@ class ErrorResponse extends Error {
 }
 
 function handleError(error, res) {
-  let statusCode = error.statusCode || 500;
+  let statusCode = error?.statusCode || 500;
   res
     .status(statusCode)
     .json({ success: false, message: error.message, code: statusCode });

@@ -30,6 +30,7 @@ function getFile(query) {
     params: { directory: query },
   });
 }
+
 function addFileAPI(body) {
   return http.post("/files/create", { ...body });
 }
@@ -486,4 +487,21 @@ function appInit(e) {
 window.addEventListener("load", appInit);
 window.addEventListener("contextmenu", function (e) {
   e.preventDefault();
-}); //0038481171
+});
+let obj = {
+  content: [
+    { text: "paragraph 1" },
+    {
+      content: [{ text: "paragraph 2" }],
+    },
+    { text: "paragraph 3" },
+    {
+      content: [
+        { text: "paragraph 4" },
+        {
+          content: [{ text: "paragraph 5" }],
+        },
+      ],
+    },
+  ],
+};

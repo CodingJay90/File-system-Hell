@@ -65,9 +65,10 @@ class DnD {
     if (folderMoved) {
       oldDir = this.folders[this.selectedId].path; //source
       newDir = this.folders[this.dropZoneId].path; //target
+      const newDirPathName = this.folders[this.selectedId].name;
       this.moveFileOrFolderAPI(oldDir, newDir, this.type);
       this.swap();
-      this.folders[this.selectedId].path = newDir;
+      this.folders[this.selectedId].path = `${newDir}\\${newDirPathName}`;
     } else {
       fileName = this.files[this.selectedId].file_name;
       oldDir = this.files[this.selectedId].file_dir;
@@ -88,6 +89,7 @@ class DnD {
   swap() {
     let from = selectDomElement(`[id='${this.selectedId}']`);
     let to = selectDomElement(`[id='${this.dropZoneId}']`);
+    from.classList.add("nested");
 
     if (from.contains(to)) return; //prevent parent folder getting moved into subfolder
     if (!to.classList.contains("explorer__content-folder--collapsed"))

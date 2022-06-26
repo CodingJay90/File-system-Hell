@@ -3,6 +3,7 @@ import path from "path";
 import fse from "fs-extra";
 import { baseDirectory } from "../utils/constants.js";
 import { ErrorResponse } from "../utils/errorResponse.js";
+import jp from "fs-jetpack";
 
 function checkForChildDirectory(dir, parent) {
   return fs
@@ -97,6 +98,7 @@ export function createDirectory(dir) {
 export function moveDirectory(oldDir, newDir) {
   try {
     fse.moveSync(oldDir, newDir);
+    // jp.moveAsync(oldDir, newDir);
   } catch (error) {
     throw error;
   }

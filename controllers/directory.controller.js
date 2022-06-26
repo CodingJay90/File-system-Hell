@@ -26,7 +26,7 @@ export async function createDirectoryController(req, res) {
   try {
     let dir = path.resolve(baseDirectory, req.body.new_directory);
     createDirectory(dir);
-    res.status(201).json("ok");
+    res.status(201).json({ success: true });
   } catch (error) {
     handleError(error, res);
   }
@@ -66,9 +66,12 @@ export async function moveDirectoryController(req, res) {
     let { old_dir, new_dir } = req.body;
     let destination = path.basename(old_dir);
     let newDirPath = new_dir.concat(`\\${destination}`);
+    // console.log("destination=====> ", destination);
+    // console.log("newDirPath=====> ", newDirPath);
     moveDirectory(old_dir, newDirPath);
     res.status(204).json("ok");
   } catch (error) {
-    handleError(error);
+    console.log(error, "error");
+    handleError(error, res);
   }
 }

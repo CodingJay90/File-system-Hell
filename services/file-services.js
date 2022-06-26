@@ -16,7 +16,12 @@ export function readFileContent(fileDir) {
     let buffer = fs.readFileSync(fileDir);
     let strData = buffer.toString();
     return {
-      content: fileType === ".json" ? JSON.parse(strData) : strData,
+      content:
+        fileType === ".json"
+          ? strData
+            ? JSON.parse(strData)
+            : "" /* check if json file is valid and has content */
+          : strData,
       fileName,
       fileType,
     };
