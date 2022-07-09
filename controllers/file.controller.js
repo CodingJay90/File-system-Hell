@@ -6,6 +6,7 @@ import {
   readAllDir,
   readFileContent,
   renameFile,
+  writeToFile,
 } from "../services/file-services.js";
 import path from "path";
 import { ErrorResponse, handleError } from "../utils/errorResponse.js";
@@ -109,6 +110,14 @@ export async function renameFileController(req, res) {
 export async function deleteFileController(req, res) {
   try {
     deleteFileFromDirectory(req.body.file_dir);
+    res.status(204).json("ok");
+  } catch (error) {
+    handleError(error, res);
+  }
+}
+export async function writeToFileController(req, res) {
+  try {
+    writeToFile(req.body.file_dir, req.body.file_content);
     res.status(204).json("ok");
   } catch (error) {
     handleError(error, res);

@@ -89,3 +89,16 @@ export function checkFileExists(fileDir) {
     throw new ErrorResponse("File doesn't exist", 200);
   }
 }
+export function writeToFile(fileDir, content) {
+  try {
+    checkFileExists(fileDir);
+    fs.writeFileSync(fileDir, content, function (err) {
+      if (err) {
+        throw err;
+      }
+    });
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
