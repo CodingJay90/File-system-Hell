@@ -7,7 +7,7 @@ import swaggerDefinition from "./swagger-definition.js";
 import swaggerJsdoc from "swagger-jsdoc";
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 //Swagger init
 const swaggerJsdocOptions = {
