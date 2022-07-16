@@ -56,8 +56,10 @@ export async function getAllFiles(req, res) {
         file_content: content,
       });
     });
-    // console.log("file ==", fileContent);
-    res.status(200).json({ files: fileContent, file_dir: fileDir });
+    res.status(200).json({
+      files: fileContent,
+      file_dir: fileDir,
+    });
   } catch (error) {
     handleError(error, res);
   }

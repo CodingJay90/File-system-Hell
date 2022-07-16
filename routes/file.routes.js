@@ -15,6 +15,7 @@ router.get("/get-file", getFile);
 router.post("/create", createFileController);
 router.post("/move", moveFileController);
 router.patch("/rename", renameFileController);
+router.delete("/delete", deleteFileController);
 router.patch("/patch", renameFileController);
 router.patch("/write", writeToFileController);
 

@@ -41,6 +41,7 @@ export function readAllDir(dir) {
 
 export function createFile(filePath, content) {
   try {
+    if (fs.existsSync(filePath)) throw new ErrorResponse("File already exist");
     const data = fs.writeFileSync(filePath, content);
     return data;
   } catch (error) {
